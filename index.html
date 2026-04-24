@@ -57,25 +57,6 @@
     .dark-mode header {
       background: #222;
     }
-    .ai-box {
-      border: 1px solid #999;
-      background: #f9f9f9;
-      padding: 10px;
-      margin-top: 20px;
-      font-size: 14px;
-    }
-    .dark-mode .ai-box {
-      background: #1e1e1e;
-      color: #aaa;
-    }
-    .ai-box table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .ai-box td {
-      border: 1px solid #ccc;
-      padding: 5px;
-    }
   </style>
 </head>
 <body>
@@ -103,6 +84,13 @@
       
       <h3>Mode</h3>
       <button onclick="toggleMode()">Toggle Dark/Light</button>
+      
+      <h3>Search</h3>
+      <!-- DuckDuckGo Search Box -->
+      <form action="https://duckduckgo.com/" method="get">
+        <input type="text" name="q" placeholder="Search..." style="width:80%">
+        <input type="submit" value="Search">
+      </form>
     </div>
     
     <div class="content">
@@ -113,14 +101,16 @@
       <h2>Notes</h2>
       <div class="note" contenteditable="true">Write your notes here...</div>
       
-      <h2>AI & Translate Help</h2>
-      <div class="ai-box">
-        <table>
-          <tr><td>User Input</td><td><input type="text" id="userInput" style="width:100%"></td></tr>
-          <tr><td>Output</td><td><div id="output">Result will appear here...</div></td></tr>
-        </table>
-        <button onclick="fakeTranslate()">Translate</button>
-        <button onclick="fakeAI()">AI Help</button>
+      <h2>Google Translate</h2>
+      <!-- Google Translate Widget -->
+      <div id="google_translate_element"></div>
+      
+      <h2>AI Help (Demo)</h2>
+      <!-- AI Chatbot Placeholder -->
+      <div style="border:1px solid #ccc; padding:10px; margin-top:20px;">
+        <textarea id="aiInput" rows="3" style="width:100%" placeholder="Type your question..."></textarea>
+        <button onclick="demoAI()">Ask AI</button>
+        <div id="aiOutput" style="margin-top:10px; color:#555;">AI response will appear here...</div>
       </div>
     </div>
   </div>
@@ -137,15 +127,21 @@
       document.body.classList.toggle('dark-mode');
     }
     
-    function fakeTranslate() {
-      let text = document.getElementById('userInput').value;
-      document.getElementById('output').textContent = "Translated: " + text;
-    }
-    
-    function fakeAI() {
-      let text = document.getElementById('userInput').value;
-      document.getElementById('output').textContent = "AI Suggestion: " + text;
+    function demoAI() {
+      let text = document.getElementById('aiInput').value;
+      document.getElementById('aiOutput').textContent = "Demo AI Response: " + text;
     }
   </script>
+  
+  <!-- Google Translate Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en', includedLanguages: 'bn,en,hi'},
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
