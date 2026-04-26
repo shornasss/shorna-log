@@ -27,155 +27,51 @@
 
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background-color: var(--bg-color);
       color: var(--text-color);
       transition: all 0.3s ease;
     }
 
-    header {
-      background: var(--header-bg);
-      color: #fff;
-      padding: 15px;
-      text-align: center;
-    }
+    header { background: var(--header-bg); color: #fff; padding: 15px; text-align: center; }
 
-    /* Home Dropdown Menu */
-    nav {
-      background: var(--nav-bg);
-      display: flex;
-      justify-content: center;
-      padding: 10px;
-      position: relative;
-    }
+    nav { background: var(--nav-bg); display: flex; justify-content: center; padding: 10px; position: relative; }
 
-    .dropdown {
-      position: relative;
-    }
-
-    .dropbtn {
-      color: white;
-      padding: 10px 25px;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      background: #444;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #ffffff;
-      min-width: 220px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 100;
-      border-radius: 5px;
-      top: 45px;
-    }
-
-    .dropdown-content a {
-      color: #333;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid #eee;
-    }
-
+    .dropdown { position: relative; }
+    .dropbtn { color: white; padding: 10px 25px; cursor: pointer; border: none; background: #444; border-radius: 5px; font-size: 16px; }
+    .dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 220px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 5px; top: 45px; }
+    .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
     .dropdown-content a:hover { background-color: #f1f1f1; }
     .show { display: block; }
 
-    .container {
-      display: flex;
-      padding: 20px;
-      gap: 25px;
-    }
-
+    .container { display: flex; padding: 20px; gap: 25px; }
     .sidebar { width: 28%; }
     .content { width: 72%; }
 
-    /* 3D Glass Box Styling */
-    .glass-box {
-      background: var(--box-bg);
-      padding: 15px;
-      margin-bottom: 25px;
-      border-radius: 15px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
+    .glass-box { background: var(--box-bg); padding: 15px; margin-bottom: 25px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; }
+    #time { font-weight: bold; font-size: 1.4em; color: var(--accent-color); }
 
-    #time {
-      font-weight: bold;
-      font-size: 1.4em;
-      color: var(--accent-color);
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
+    .personal-info { font-family: "Constantia", serif; line-height: 1.6; }
+    .note { background: var(--box-bg); border-radius: 10px; padding: 15px; min-height: 150px; box-shadow: var(--shadow); margin-bottom: 10px; outline: none; }
 
-    /* Search Box Styling */
-    .search-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    /* Draft System Styling */
+    .draft-list-item { 
+      background: var(--box-bg); padding: 12px; margin-bottom: 10px; 
+      border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     }
+    .draft-list-item:hover { transform: scale(1.02); background: #eee; color: #000; }
+    
+    .mail-view { background: white; color: #333; padding: 20px; border-radius: 10px; border: 1px solid #ccc; white-space: pre-wrap; margin-top: 15px; }
+    .btn-action { padding: 8px 15px; border-radius: 5px; border: none; cursor: pointer; margin-right: 10px; font-weight: bold; }
+    .btn-copy { background: #2ecc71; color: white; }
+    .btn-back { background: #3498db; color: white; }
+    .btn-clear { background: #e74c3c; color: white; }
 
-    #siteSearch {
-      padding: 10px;
-      border-radius: 20px;
-      border: none;
+    #siteSearch, #draftSearch {
+      padding: 10px; border-radius: 20px; border: none; 
       box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff;
-      outline: none;
-      width: 80%;
-      margin: 0 auto;
-    }
-
-    .search-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    /* Personal Info Styling */
-    .personal-info {
-      font-family: "Constantia", serif;
-      line-height: 1.6;
-    }
-
-    /* Note Section */
-    .note-container {
-      position: relative;
-    }
-
-    .note {
-      background: var(--box-bg);
-      border-radius: 10px;
-      padding: 15px;
-      min-height: 150px;
-      box-shadow: var(--shadow);
-      margin-bottom: 10px;
-      outline: none;
-    }
-
-    /* Buttons */
-    .btn-clear {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 5px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover { opacity: 0.8; }
-
-    .back-btn {
-      color: #3498db;
-      cursor: pointer;
-      font-weight: bold;
-      text-decoration: underline;
-      display: inline-block;
-      margin-top: 15px;
+      outline: none; width: 80%; margin-bottom: 10px;
     }
   </style>
 </head>
@@ -189,13 +85,13 @@
     <div class="dropdown">
       <button onclick="toggleHome(event)" class="dropbtn">Home ▼</button>
       <div id="homeMenu" class="dropdown-content">
-        <a href="#" onclick="showPage('Not Eligible appeal')">Not Eligible appeal</a>
-        <a href="#" onclick="showPage('Offer letter')">Offer letter</a>
-        <a href="#" onclick="showPage('Additional')">Additional</a>
-        <a href="#" onclick="showPage('Check request')">Check request</a>
-        <a href="#" onclick="showPage('Withdraw')">Withdraw</a>
-        <a href="#" onclick="showPage('Resubmission')">Resubmission</a>
-        <a href="#" onclick="showPage('About Me')">About Me</a>
+        <a href="#" onclick="showNotEligiblePage()">Not Eligible appeal</a>
+        <a href="#" onclick="showPlaceholderPage('Offer letter')">Offer letter</a>
+        <a href="#" onclick="showPlaceholderPage('Additional')">Additional</a>
+        <a href="#" onclick="showPlaceholderPage('Check request')">Check request</a>
+        <a href="#" onclick="showPlaceholderPage('Withdraw')">Withdraw</a>
+        <a href="#" onclick="showPlaceholderPage('Resubmission')">Resubmission</a>
+        <a href="#" onclick="showPlaceholderPage('About Me')">About Me</a>
       </div>
     </div>
   </nav>
@@ -209,23 +105,17 @@
       
       <div class="glass-box">
         <h3>Search</h3>
-        <div class="search-container">
-          <input type="text" id="siteSearch" placeholder="Search categories..." onkeyup="handleSearchEnter(event)">
-          <div class="search-buttons">
-            <button onclick="performSearch()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Search</button>
-            <button onclick="clearSearch()" class="btn-clear">Clear</button>
-          </div>
-        </div>
+        <input type="text" id="siteSearch" placeholder="Search categories..." onkeyup="handleMainSearch(event)">
       </div>
 
       <div class="glass-box">
         <h3>Calendar</h3>
-        <input type="date" style="width:90%; border:none; padding:5px; border-radius:5px;">
+        <input type="date" style="width:90%; border-radius:5px; border:none; padding:5px;">
       </div>
       
       <div class="glass-box">
         <h3>Mode</h3>
-        <button onclick="toggleMode()" style="padding:8px 15px; border-radius:20px; border:none; cursor:pointer; background:#555; color:white;">Toggle Dark/Light</button>
+        <button onclick="toggleMode()" class="btn-action" style="background:#555; color:white;">Toggle Mode</button>
       </div>
     </div>
     
@@ -236,31 +126,44 @@
           <p><strong>Name:</strong> Shorna</p>
           <p><strong>Designation:</strong> Junior Executive, Collection and Project</p>
           <p><strong>Team:</strong> BCBS</p>
-          <p><strong>Email:</strong> <a href="mailto:shorna@leverngear.com" style="color:inherit;">shorna@leverngear.com</a></p>
+          <p><strong>Email:</strong> shorna@leverngear.com</p>
         </div>
         
         <h2>Notes</h2>
-        <div class="note-container">
-          <div id="notePad" class="note" contenteditable="true">Write your notes here...</div>
-          <button onclick="clearNotes()" class="btn-clear">Clear Notes</button>
-        </div>
+        <div id="notePad" class="note" contenteditable="true">Write your notes here...</div>
+        <button onclick="clearNotes()" class="btn-clear btn-action">Clear Notes</button>
 
-        <hr style="margin:40px 0; opacity: 0.2;">
-
-        <h2>Google</h2>
+        <h2 style="margin-top:30px;">Google</h2>
         <div id="google_translate_element"></div>
         
         <h2 style="margin-top:30px;">AI</h2>
-        <div style="border:1px solid #ccc; padding:15px; border-radius:10px; background: rgba(255,255,255,0.1);">
-          <p>Need AI Assistance?</p>
-          <a href="https://duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat" target="_blank" style="text-decoration:none; background:#000; color:#fff; padding:10px 20px; border-radius:5px; display:inline-block;">Open DuckDuckGo AI</a>
-        </div>
+        <a href="https://duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat" target="_blank" style="text-decoration:none; background:#000; color:#fff; padding:10px 20px; border-radius:5px; display:inline-block;">Open DuckDuckGo AI</a>
       </div>
     </div>
   </div>
 
   <script>
-    // 1. Time Function
+    // Data Structure for Not Eligible Appeal
+    const notEligibleDrafts = [
+      {
+        keyword: "Exceeded the four-day timeline",
+        mail: "Subject: Request for Reconsideration: IDR Eligibility – DISP-4538391\n\nDear IDR Reviewer,\n\nThank you for your recent notification regarding the eligibility of our Independent Dispute Resolution (IDR) dispute.\n\nDISP-4538391 Upon thorough review of the Federal IDR process requirements and our submission timeline, we respectfully request a reconsideration of the eligibility determination for the referenced dispute. We have reviewed the IDR and found that the reason given for “Not Eligible” is not justified. Our initial EOB process date was 09/03/2025 and our negotiation submission date was 09/27/2025, According to the Federal IDR guidelines, we must submit the IDR within 34 business days from the date of the negotiation submission. According to the business day calculation our negotiation submission date was 09/27/2025 and the end date is 11/11/2025. IDR start date is 11/12/2025 and IDR end date is 11/17/2025. Our idr submission date is 03/14/2026, which, when calculated in business days, comes to the 33rd business days. According to Federal IDR guidelines, this means the IDR was submitted within the appropriate timeframe. Therefore, this case should be deemed eligible for the IDR process. We respectfully request that you reopen and review DISP-4538391.\n\nFor your reference, I have attached :\n\n*Proof of business date verifying for idr\n*Proof of business date verifying for negotiation\n*Negotiation rejection paper\n*Proof of IDR submission date\n*EOB paper\n*Negotiation paper\n\nPlease see all the document's and let us know if any additional documentation is needed to move this case forward.\n\nThanks and regards\nShorna"
+      },
+      {
+        keyword: "Resubmitted idr not eligible for timing issue",
+        mail: "Subject: Reconsideration Request: DISP-4821305 (Resubmission of DISP-4684781)\n\nDear IPRO Team,\n\nI am writing to ask you to reconsider the decision for DISP-4821305. It was marked as not eligible because of a timing issue, but I believe there has been a misunderstanding. This is actually a resubmission of my previous dispute, DISP-4684781, which was originally filed on time. I only resubmitted it because I was instructed to fix a bundling error, not because I started a new late claim.\n\nTimeline and Facts of the Case:\n\nEOB Process Date: 09/19/2025\n\nOpen Negotiation Initiated: 10/20/2025 (Well within the 30-business-day window).\n\nOriginal IDR Submission (DISP-4684781): 12/05/2025. This was submitted within 4 business days following the close of the 30-day negotiation period.\n\nIneligibility Notice for DISP-4684781: This dispute was deemed ineligible due to \"incorrect bundling,\" and we were explicitly instructed in your notice dated 12/15/2025 to \"resubmit this dispute\" with the correct coding (DRG code).\n\nResubmission (DISP-4821305): Following your instructions, we resubmitted the dispute using the DRG code on 12/22/2025.\n\nBasis for Reconsideration: The current dispute (DISP-4821305) is not a \"new\" late filing, but a rectified resubmission of the original filing (DISP-4684781) made at your direction. Since the original dispute was filed within the statutory timeframe, and the resubmission was made promptly after receiving your instructions to correct the bundling error, it should be considered timely under the Federal IDR process rules.\n\nI have attached the EOB, Negotiation submission paper including date and time also resubmission requested mail, Our resubmission paper and other documents for your reference. We kindly request you to reopen this case and proceed with the eligibility review.\n\nThank you for your time and assistance.\n\nThanks and regards\nShorna"
+      },
+      {
+        keyword: "Open negotiation not complete",
+        mail: "Subject: Request for Reconsideration of Eligibility Determination - IDR Dispute DISP-5466122\n\nDear C2C Innovative Solutions, Inc IDR Team,\n\nThank you for your recent notification regarding the ineligibility of our Independent Dispute Resolution (IDR) dispute, reference number DISP-5466122.\n\nWe understand the determination was made on the grounds that \"Open negotiation not complete\" However, we respectfully believe this reason for ineligibility is in error. We assert that the open negotiation process was completed as required by the Federal IDR guidelines.\n\nFor your review, the following timeline confirms the completion of the open negotiation period:\nNegotiation Submission Date (Start Date): 01/20/2026\nNegotiation End Date (30 Business Days): 03/03/2026\nIDR Submission Date: 03/05/2026\nAs demonstrated by the attached documents, the IDR was initiated on 03/05/2026, which is after the required 30-business-day open negotiation period ended on 03/03/2026. Therefore, the requirement for the negotiation period to be considered complete was definitively fulfilled prior to the IDR filing.\n\nFor your internal reference, the specific Negotiation Dispute ID is 100002799011.\n\nWe kindly request that you review the attached documents and reconsider the eligibility of dispute DISP-5466122. Please let us know if any further documentation is required to move this case forward.\n\nThanks and regards\nShorna"
+      },
+      {
+        keyword: "Claim is not subject to the No Surprises Act (NSA)",
+        mail: "Subject: Request for Re-evaluation: Eligibility Dispute for ID DISP-4655790\n\nDear iMPROve Health IDR Team,\n\nI am writing to formally request a re-evaluation of the eligibility determination for DISP-4655790. We recently received a notice stating this claim is not subject to the No Surprises Act (NSA), but the documentation provided by the payer suggests otherwise.\n\nWe believe this dispute should proceed through the Federal IDR process based on the following evidence:\n\nPayer Recognition of QPA: The Provider Claim Summary provided by BlueCross BlueShield of Texas explicitly calculates and lists a Qualifying Payment Amount (QPA) for the services rendered (e.g., $663.69 for procedure code 450). Under the No Surprises Act, the disclosure of a QPA is a primary indicator that the claim is subject to NSA protections.\n\nActive Negotiation History: We initiated a formal Open Negotiation (Dispute ID: 100002381141) regarding this claim. During this process, we submitted an offer of $1,902.00, and the plan responded with a counter-offer of $674.94. The fact that the payer engaged in the negotiation framework further supports that this was handled as an NSA-eligible dispute.\n\nSignificant Patient Responsibility: The current adjudication has left the patient with a responsibility of $3,360.22 for emergency services. Protecting patients from such high out-of-network costs is the core intent of the Federal IDR process.\n\nGiven that the payer has already calculated the QPA and participated in negotiations, we respectfully ask that you reopen this case and allow it to move forward. I have attached the EOB, Provider Claim Summary and Negotiation Paper for your immediate review.\n\nThank you for your time and assistance in this matter.\n\nThanks and regards\nShorna"
+      }
+    ];
+
+    // Functions
     function updateTime() {
       const now = new Date();
       document.getElementById('time').textContent = now.toLocaleTimeString();
@@ -268,63 +171,76 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // 2. Dark Mode
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
+    function toggleMode() { document.body.classList.toggle('dark-mode'); }
+    function toggleHome(e) { e.stopPropagation(); document.getElementById("homeMenu").classList.toggle("show"); }
+    function hideMenu() { document.getElementById("homeMenu").classList.remove("show"); }
+
+    // Navigation to Not Eligible Page
+    function showNotEligiblePage() {
+      const content = document.getElementById('mainContent');
+      let listHtml = `
+        <h2>Not Eligible Appeal - Draft List</h2>
+        <input type="text" id="draftSearch" placeholder="Search keywords..." onkeyup="filterDrafts()">
+        <button onclick="clearDraftSearch()" class="btn-clear btn-action" style="margin-bottom:15px;">Clear Search</button>
+        <div id="draftListContainer">`;
+      
+      notEligibleDrafts.forEach((item, index) => {
+        listHtml += `
+          <div class="draft-list-item" onclick="viewMail(${index})">
+            <span><strong>Keyword:</strong> ${item.keyword}</span>
+            <span>➔</span>
+          </div>`;
+      });
+      
+      listHtml += `</div><button class="btn-back btn-action" onclick="location.reload()">Back to Home</button>`;
+      content.innerHTML = listHtml;
     }
 
-    // 3. Dropdown Logic
-    function toggleHome(e) {
-      e.stopPropagation();
-      document.getElementById("homeMenu").classList.toggle("show");
-    }
-    function hideMenu() {
-      document.getElementById("homeMenu").classList.remove("show");
-    }
-
-    // 4. Navigation & Page Display
-    const categories = ["Not Eligible appeal", "Offer letter", "Additional", "Check request", "Withdraw", "Resubmission", "About Me"];
-
-    function showPage(pageName) {
+    // View Single Mail
+    function viewMail(index) {
+      const item = notEligibleDrafts[index];
       const content = document.getElementById('mainContent');
       content.innerHTML = `
-        <h2>${pageName}</h2>
-        <p>You are viewing the <strong>${pageName}</strong> section.</p>
-        <div class="back-btn" onclick="goHome()">← Back to Home</div>
+        <h2>Keyword: ${item.keyword}</h2>
+        <div class="mail-view" id="mailText">${item.mail}</div>
+        <div style="margin-top:20px;">
+          <button class="btn-copy btn-action" onclick="copyMail()">Copy Mail</button>
+          <button class="btn-back btn-action" onclick="showNotEligiblePage()">Back to List</button>
+        </div>
       `;
     }
 
-    function goHome() {
-      location.reload(); // Simplest way to return to original state
+    function copyMail() {
+      const text = document.getElementById('mailText').innerText;
+      navigator.clipboard.writeText(text).then(() => alert("Mail copied to clipboard!"));
     }
 
-    // 5. Search Functionality
-    function performSearch() {
-      const query = document.getElementById('siteSearch').value.toLowerCase();
-      if(query === "") return;
-
-      const match = categories.find(cat => cat.toLowerCase().includes(query));
-      if(match) {
-        showPage(match);
-      } else {
-        alert("No category found matching: " + query);
+    function filterDrafts() {
+      const val = document.getElementById('draftSearch').value.toLowerCase();
+      const items = document.getElementsByClassName('draft-list-item');
+      for (let item of items) {
+        item.style.display = item.innerText.toLowerCase().includes(val) ? "flex" : "none";
       }
     }
 
-    function handleSearchEnter(e) {
-      if (e.key === 'Enter') performSearch();
+    function clearDraftSearch() {
+      document.getElementById('draftSearch').value = "";
+      filterDrafts();
     }
 
-    function clearSearch() {
-      document.getElementById('siteSearch').value = "";
-    }
-
-    // 6. Clear Notes
-    function clearNotes() {
-      if(confirm("Are you sure you want to clear all notes?")) {
-        document.getElementById('notePad').innerHTML = "";
+    function handleMainSearch(e) {
+      if(e.key === "Enter") {
+        const val = e.target.value.toLowerCase();
+        if(val.includes("not eligible")) showNotEligiblePage();
+        else alert("Category not found");
       }
     }
+
+    function showPlaceholderPage(name) {
+      document.getElementById('mainContent').innerHTML = `<h2>${name}</h2><p>Drafts for ${name} will be added soon.</p><button class="btn-back btn-action" onclick="location.reload()">Back to Home</button>`;
+    }
+
+    function clearNotes() { document.getElementById('notePad').innerHTML = ""; }
   </script>
 
   <script type="text/javascript">
@@ -333,6 +249,5 @@
     }
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 </body>
 </html>
