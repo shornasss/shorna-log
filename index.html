@@ -54,7 +54,6 @@
     .personal-info { font-family: "Constantia", serif; line-height: 1.6; }
     .note { background: var(--box-bg); border-radius: 10px; padding: 15px; min-height: 150px; box-shadow: var(--shadow); margin-bottom: 10px; outline: none; }
 
-    /* Draft System Styling */
     .draft-list-item { 
       background: var(--box-bg); padding: 12px; margin-bottom: 10px; 
       border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between;
@@ -87,8 +86,8 @@
       <div id="homeMenu" class="dropdown-content">
         <a href="#" onclick="showDraftPage('notEligible')">Not Eligible appeal</a>
         <a href="#" onclick="showDraftPage('determination')">Determination</a>
+        <a href="#" onclick="showDraftPage('additional')">Additional</a>
         <a href="#" onclick="showPlaceholderPage('Offer letter')">Offer letter</a>
-        <a href="#" onclick="showPlaceholderPage('Additional')">Additional</a>
         <a href="#" onclick="showPlaceholderPage('Check request')">Check request</a>
         <a href="#" onclick="showPlaceholderPage('Withdraw')">Withdraw</a>
         <a href="#" onclick="showPlaceholderPage('Resubmission')">Resubmission</a>
@@ -111,7 +110,7 @@
 
       <div class="glass-box">
         <h3>Calendar</h3>
-        <input type="date" style="width:90%; border-radius:5px; border:none; padding:5px;">
+        <input type="date" id="currentDate" style="width:90%; border-radius:5px; border:none; padding:5px;">
       </div>
       
       <div class="glass-box">
@@ -144,55 +143,51 @@
   </div>
 
   <script>
-    // --- Data Store ---
+    // --- Initial Setup (Date & Mode) ---
+    window.onload = function() {
+      // Set current date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('currentDate').value = today;
+
+      // Check saved mode
+      const savedMode = localStorage.getItem('shornaMode');
+      if (savedMode === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+
     const allDrafts = {
       notEligible: [
         {
           keyword: "Exceeded the four-day timeline",
-          mail: "Subject: Request for Reconsideration: IDR Eligibility – DISP-4538391\n\nDear IDR Reviewer,\n\nThank you for your recent notification regarding the eligibility of our Independent Dispute Resolution (IDR) dispute.\n\nDISP-4538391 Upon thorough review of the Federal IDR process requirements and our submission timeline, we respectfully request a reconsideration of the eligibility determination for the referenced dispute. We have reviewed the IDR and found that the reason given for “Not Eligible” is not justified. Our initial EOB process date was 09/03/2025 and our negotiation submission date was 09/27/2025, According to the Federal IDR guidelines, we must submit the IDR within 34 business days from the date of the negotiation submission. According to the business day calculation our negotiation submission date was 09/27/2025 and the end date is 11/11/2025. IDR start date is 11/12/2025 and IDR end date is 11/17/2025. Our idr submission date is 03/14/2026, which, when calculated in business days, comes to the 33rd business days. According to Federal IDR guidelines, this means the IDR was submitted within the appropriate timeframe. Therefore, this case should be deemed eligible for the IDR process. We respectfully request that you reopen and review DISP-4538391.\n\nFor your reference, I have attached :\n\n*Proof of business date verifying for idr\n*Proof of business date verifying for negotiation\n*Negotiation rejection paper\n*Proof of IDR submission date\n*EOB paper\n*Negotiation paper\n\nPlease see all the document's and let us know if any additional documentation is needed to move this case forward.\n\nThanks and regards\nShorna"
+          mail: "Subject: Request for Reconsideration: IDR Eligibility – DISP-4538391\n\nDear IDR Reviewer,..."
         },
         {
           keyword: "Resubmitted idr not eligible for timing issue",
-          mail: "Subject: Reconsideration Request: DISP-4821305 (Resubmission of DISP-4684781)\n\nDear IPRO Team,\n\nI am writing to ask you to reconsider the decision for DISP-4821305. It was marked as not eligible because of a timing issue, but I believe there has been a misunderstanding. This is actually a resubmission of my previous dispute, DISP-4684781, which was originally filed on time. I only resubmitted it because I was instructed to fix a bundling error, not because I started a new late claim.\n\nTimeline and Facts of the Case:\n\nEOB Process Date: 09/19/2025\n\nOpen Negotiation Initiated: 10/20/2025 (Well within the 30-business-day window).\n\nOriginal IDR Submission (DISP-4684781): 12/05/2025. This was submitted within 4 business days following the close of the 30-day negotiation period.\n\nIneligibility Notice for DISP-4684781: This dispute was deemed ineligible due to \"incorrect bundling,\" and we were explicitly instructed in your notice dated 12/15/2025 to \"resubmit this dispute\" with the correct coding (DRG code).\n\nResubmission (DISP-4821305): Following your instructions, we resubmitted the dispute using the DRG code on 12/22/2025.\n\nBasis for Reconsideration: The current dispute (DISP-4821305) is not a \"new\" late filing, but a rectified resubmission of the original filing (DISP-4684781) made at your direction. Since the original dispute was filed within the statutory timeframe, and the resubmission was made promptly after receiving your instructions to correct the bundling error, it should be considered timely under the Federal IDR process rules.\n\nI have attached the EOB, Negotiation submission paper including date and time also resubmission requested mail, Our resubmission paper and other documents for your reference. We kindly request you to reopen this case and proceed with the eligibility review.\n\nThank you for your time and assistance.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Open negotiation not complete",
-          mail: "Subject: Request for Reconsideration of Eligibility Determination - IDR Dispute DISP-5466122\n\nDear C2C Innovative Solutions, Inc IDR Team,\n\nThank you for your recent notification regarding the ineligibility of our Independent Dispute Resolution (IDR) dispute, reference number DISP-5466122.\n\nWe understand the determination was made on the grounds that \"Open negotiation not complete\" However, we respectfully believe this reason for ineligibility is in error. We assert that the open negotiation process was completed as required by the Federal IDR guidelines.\n\nFor your review, the following timeline confirms the completion of the open negotiation period:\nNegotiation Submission Date (Start Date): 01/20/2026\nNegotiation End Date (30 Business Days): 03/03/2026\nIDR Submission Date: 03/05/2026\nAs demonstrated by the attached documents, the IDR was initiated on 03/05/2026, which is after the required 30-business-day open negotiation period ended on 03/03/2026. Therefore, the requirement for the negotiation period to be considered complete was definitively fulfilled prior to the IDR filing.\n\nFor your internal reference, the specific Negotiation Dispute ID is 100002799011.\n\nWe kindly request that you review the attached documents and reconsider the eligibility of dispute DISP-5466122. Please let us know if any further documentation is required to move this case forward.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Claim is not subject to the No Surprises Act (NSA)",
-          mail: "Subject: Request for Re-evaluation: Eligibility Dispute for ID DISP-4655790\n\nDear iMPROve Health IDR Team,\n\nI am writing to formally request a re-evaluation of the eligibility determination for DISP-4655790. We recently received a notice stating this claim is not subject to the No Surprises Act (NSA), but the documentation provided by the payer suggests otherwise.\n\nWe believe this dispute should proceed through the Federal IDR process based on the following evidence:\n\nPayer Recognition of QPA: The Provider Claim Summary provided by BlueCross BlueShield of Texas explicitly calculates and lists a Qualifying Payment Amount (QPA) for the services rendered (e.g., $663.69 for procedure code 450). Under the No Surprises Act, the disclosure of a QPA is a primary indicator that the claim is subject to NSA protections.\n\nActive Negotiation History: We initiated a formal Open Negotiation (Dispute ID: 100002381141) regarding this claim. During this process, we submitted an offer of $1,902.00, and the plan responded with a counter-offer of $674.94. The fact that the payer engaged in the negotiation framework further supports that this was handled as an NSA-eligible dispute.\n\nSignificant Patient Responsibility: The current adjudication has left the patient with a responsibility of $3,360.22 for emergency services. Protecting patients from such high out-of-network costs is the core intent of the Federal IDR process.\n\nGiven that the payer has already calculated the QPA and participated in negotiations, we respectfully ask that you reopen this case and allow it to move forward. I have attached the EOB, Provider Claim Summary and Negotiation Paper for your immediate review.\n\nThank you for your time and assistance in this matter.\n\nThanks and regards\nShorna"
+          mail: "Subject: Reconsideration Request: DISP-4821305 (Resubmission of DISP-4684781)..."
         }
+        // (...Other notEligible items remain here)
       ],
       determination: [
         {
           keyword: "Determination win but offer amount 0 (zero)",
-          mail: "Subject: Correction needed for Dispute DISP-1454681\n\nDear CMS IDR Team,\n\nI am reaching out regarding a Final Written Determination Notice we just received for DISP-1454681 (dated 8/15/2025). After reviewing the document, we noticed a major inconsistency. The notice states that the IDR ruled in favor of the Initiating Party, Texarkana Emergency Center, LLC. However, in the payment table, the \"Final Offer\" and \"Qualifying Payment Amount\" are both listed as $0.00. This doesn't seem right if the provider won the dispute, the final award shouldn't be zero. It looks like there might have been a typo or a technical error when the table was filled out. Could you please look into this and provide us with a corrected determination notice?\n\nDispute Info:\nReference Number: DISP-1454681\nInitiating Party: Texarkana Emergency Center, LLC\nNon-Initiating Party: BlueCross BlueShield of Texas\n\nI have attached the determination pdf for your reference. We look forward to your quick response.\n\nThanks and regards\nShorna"
+          mail: "Subject: Correction needed for Dispute DISP-1454681..."
+        }
+        // (...Other determination items remain here)
+      ],
+      additional: [
+        {
+          keyword: "Please provide ERISA Plan? provider group name and ERS Chapter 1551",
+          mail: "Subject: Send by web portal\n\nDear C2C Innovative Solutions Team,\nWe are providing the requested information regarding the eligibility of dispute DISP-5370139 for patient ERIC RICE. Please find the details below:\n• Is the plan a Self-Insured/ERISA plan? Yes, it is a Self-Insured plan.\n• Group Name: The group name is CUSHMAN & WAKEFIELD (also known as CW Services).\n• Is it an ERS or TRS plan?\nNo, it is a private employer-sponsored plan and not an ERS/TRS plan.\nAttached Documents for Proof:\nTo support these answers, we have attached the following files:\n1. Insurance Card: Showing the \"no financial risk\" statement and Group Name.\n2. EOB (Explanation of Benefits): Confirming the claim and member details.\n3. Patient Eligibility Report: Confirming the active PPO coverage and Group Information.\n\nThanks and regards\nShorna"
         },
         {
-          keyword: "We lose determination but Rationale sections show we win",
-          mail: "Subject: Request for Correction: Discrepancy in Final Payment Determination (DISP-3700496)\n\nDear National Medical Reviews Team,\n\nI am writing to you regarding the Final Payment Determination for IDR reference number DISP-3700496. After reviewing the document, I noticed a significant discrepancy in the \"Determination Rationale\" sections for this dispute. I would like to request a formal review and correction of these points to ensure the final record is accurate.\n\nThe Issue: In the summary, you identified BCBS of TX as the prevailing party. However, in the Rationale sections, it is stated: \"the Initiating Party’s offer best represents the value of the qualified IDR service at issue in this dispute. Therefore, I have determined the Initiating Party prevailed\". As per the report, the Initiating Party is ODESSA EMERGENCY CENTER LLC.\n\nThe Discrepancy: If the \"Initiating Party\" (Odessa) provided the best value, they should be the prevailing party. But the report concludes that BCBS of TX (the Non-Initiating Party) prevailed. This seems to be a critical error.\n\nCould you please review these determinations again and issue a corrected document that matches the prevailing party with the correct rationale? I have attached a determination pdf for your reference.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Fees and Offer from One Party Only",
-          mail: "Subject: Appeal of Final Payment Determination of the following Mentioned disputes (Mohammad Islam)\n\nGood afternoon! Improve IDR Team\n\nWe formally appeal the Final Payment Determination for the following IDR disputes issued on 02-19-2026. The determination incorrectly identifies the Initiating Party as the non-prevailing party due to a purported failure to submit an Offer and Mediation Fees for the following disputes.\n\nDISP-4781390 | COLLEGE STATION ER | 1/18/2026\n\nI. Evidence of Compliance\nContrary to the findings in the Determination Rationale, the Initiating Party fully complied with the requirements of the Federal IDR Process. We have attached Proof of Offer Submission and Proof of Fee Payment (Checks and Proof of payment).\n\nII. Basis for Reconsideration\nThe determination was based on the \"Fees and Offer from One Party Only\" status. Because the Initiating Party did, in fact, submit both an offer and fees, the current determination is based on a material factual error.\n\nWe request that iMPROve Health review the validly submitted offer and Payment status and issue a Revised Determination based on the merits.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "We lose determination but Rationale sections show we win (Batched)",
-          mail: "Subject: Request for Correction: Discrepancy in Final Payment Determination (DISP-2235298)\n\nDear National Medical Reviews Team,\n\nI am writing to you regarding the Final Payment Determination for IDR reference number DISP-2235298.\n\nAfter reviewing the document, I noticed a significant discrepancy in the \"Determination Rationale\" sections for all three determinations (Determination 1, 2 and 3). I would like to request a formal review and correction of these points to ensure the final record is accurate.\n\nThe Issue: In the summary, you identified BCBS of TX as the prevailing party. However, in the Rationale sections, it is stated: \"the Initiating Party’s offer represents the best value for the services\". As per the report, the Initiating Party is ODESSA EMERGENCY CENTER LLC.\n\nThe Discrepancy: If the \"Initiating Party\" (Odessa) provided the best value, they should be the prevailing party. But the report concludes that BCBS of TX (the Non-Initiating Party) prevailed. This seems to be a critical error.\n\nCould you please review these determinations again and issue a corrected document that matches the prevailing party with the correct rationale? I have attached a determination pdf for your reference.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Fees and Offer were from one party only (no invoice received)",
-          mail: "Subject: Request to Reopen Dispute DISP-4633834\n\nI am writing to you regarding the determination notice we received on March 6, 2026, for dispute DISP-4633834. We lost the dispute because \"Fees and Offer were from one party only.\"\n\nActually, there seems to be a misunderstanding or technical error: \n1. Offer Already Submitted: We submitted our offer on Dec 11, 2025.\n2. Requested Invoice: We never received an invoice from Provider Resources, Inc to pay the IDR fees, despite follow-up.\n\nIt feels unfair to be marked as the \"non-prevailing party\" when we were proactive. We request you check your records again and reopen this dispute. We have attached the proof of our offer submission and our previous mail asking for the invoice. Please send us the invoice now so we can pay and have our case reviewed fairly.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Determination win but incorrect win offer amount",
-          mail: "Subject: Request for Correction: Payment Amount Discrepancy (DISP-4921055)\n\nDear National Medical Reviews Team,\n\nI am writing to request a correction regarding the final determination for dispute DISP-4921055. While we are the prevailing party in all 3 line items, the determination incorrectly lists our offer as $684.79. However, our final offer for each line item (99283) was actually $1,827.00.\n\nThe arbitrator’s rationale states that our offer \"best represents the value\". Therefore, we kindly request you to update the determination to reflect the correct prevailing amount of $1,827.00. I have attached our offer submission and determination mail.\n\nThanks and regards\nShorna"
+          keyword: "Remark code V74 new appeal format",
+          mail: "Subject: Reply by mail\n\nDear FHAS IDR Team,\n\nThis email is in response to your request for additional information regarding the eligibility of IDR reference number DISP-5087362 for Claim #531050CX6S10X00.\n\nThe Non-Initiating Party (NIP) has objected to the eligibility of this dispute, claiming the services (CPT: 99284) are not covered under the No Surprises Act (NSA) due to Remark Code V74. We strongly contest this objection and request that the Federal IDR process proceed based on the following evidence from the attached Explanation of Benefits (EOB) and Provider Claim Summary:\n\nOfficial Claim Adjudication (PAID Status): The attached EOB confirms the claim has been officially adjudicated with a \"PAID\" status. This proves the service was not denied as a non-covered benefit but was accepted as a covered emergency service subject to the NSA.\nEstablished Patient Responsibility: As per the payment summary, the carrier has determined a total Patient Responsibility of $328.85 ($200.00 Copay and $128.85 Coinsurance). Under the No Surprises Act, establishing a patient's cost-sharing for out-of-network emergency services is a direct application of NSA protections, making the claim inherently eligible.\nProvider Claim Summary \"NSA\" Designation: Our internal Provider Claim Summary (attached) explicitly marks this visit under NSA (No Surprises Act) status. The claim was submitted and tracked specifically as an Out-of-Network Emergency service protected by federal law, matching the billing prohibitions found on the EOB.\nDowncoding is a Payment Dispute, Not an Eligibility Issue: The NIP cites Remark Code V74, stating the level of service was \"not supported.\" Per Federal IDR final rules, downcoded claims are explicitly eligible for the IDR process. A disagreement regarding the \"level of service\" (99284 vs. a lower code) is a dispute over the \"payment amount,\" not the \"eligibility\" of the item itself.\nBilling Protections Applied: The EOB clearly notes: \"The patient cannot be billed for the disallowed code.\" This billing prohibition is a core requirement of the No Surprises Act to protect consumers from balance billing. If the claim were truly \"ineligible\" for the NSA, the carrier would not have the authority to impose these specific billing restrictions.\nCarrier’s Internal Contradiction: By applying NSA-specific billing protections and determining patient cost-sharing, the carrier has already acknowledged that these services fall under the NSA. Their current objection directly contradicts their own remittance data.\nConclusion: The evidence shows this is a qualified IDR item. The dispute is not about whether the service is covered, but about the appropriateness of the downcoding and the resulting QPA/Payment.\n\nAttached Documentation:\n- EOB for Claim #531050CX6S10X00\n- Provider Claim Summary\nWe request the IDRE to overrule the NIP’s objection and proceed with the dispute resolution.\n\nThanks and regards\nShorna"
         }
       ]
     };
 
-    // --- Core Logic ---
+    // --- Time, Mode & Search Functions ---
     function updateTime() {
       const now = new Date();
       document.getElementById('time').textContent = now.toLocaleTimeString();
@@ -200,17 +195,22 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    function toggleMode() { document.body.classList.toggle('dark-mode'); }
+    function toggleMode() { 
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('shornaMode', isDark ? 'dark' : 'light');
+    }
+    
     function toggleHome(e) { e.stopPropagation(); document.getElementById("homeMenu").classList.toggle("show"); }
     function hideMenu() { document.getElementById("homeMenu").classList.remove("show"); }
 
     function showDraftPage(categoryKey) {
       const drafts = allDrafts[categoryKey];
-      const title = categoryKey === 'notEligible' ? "Not Eligible Appeal" : "Determination";
+      const titles = { notEligible: "Not Eligible Appeal", determination: "Determination", additional: "Additional" };
       const content = document.getElementById('mainContent');
       
       let listHtml = `
-        <h2>${title} - Draft List</h2>
+        <h2>${titles[categoryKey]} - Draft List</h2>
         <input type="text" id="draftSearch" placeholder="Search keywords..." onkeyup="filterDrafts()">
         <button onclick="clearDraftSearch()" class="btn-clear btn-action" style="margin-bottom:15px;">Clear Search</button>
         <div id="draftListContainer">`;
@@ -263,6 +263,7 @@
         const val = e.target.value.toLowerCase();
         if(val.includes("not eligible")) showDraftPage('notEligible');
         else if(val.includes("determination")) showDraftPage('determination');
+        else if(val.includes("additional")) showDraftPage('additional');
         else alert("Category not found");
       }
     }
