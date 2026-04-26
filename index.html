@@ -2,146 +2,337 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shorna'S Log</title>
   <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333;
+      --header-bg: #444;
+      --nav-bg: #222;
+      --box-bg: #ddd;
+      --shadow: 5px 5px 15px #bebebe, -5px -5px 15px #ffffff;
+      --accent-color: #ff5722;
+    }
+
+    .dark-mode {
+      --bg-color: #A6A6A6;
+      --text-color: #DBDBDB;
+      --header-bg: #222;
+      --nav-bg: #333;
+      --box-bg: #8c8c8c;
+      --shadow: 5px 5px 15px #8e8e8e, -5px -5px 15px #bebebe;
+      --accent-color: #ffccbc;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
     }
+
     header {
-      background: #444;
+      background: var(--header-bg);
       color: #fff;
       padding: 15px;
       text-align: center;
     }
+
+    /* Home Dropdown Menu */
     nav {
-      background: #222;
-      color: #fff;
+      background: var(--nav-bg);
       display: flex;
       justify-content: center;
       padding: 10px;
+      position: relative;
     }
-    nav a {
-      color: #fff;
-      margin: 0 15px;
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropbtn {
+      color: white;
+      padding: 10px 25px;
       text-decoration: none;
+      cursor: pointer;
+      border: none;
+      background: #444;
+      border-radius: 5px;
+      font-size: 16px;
     }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #ffffff;
+      min-width: 220px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 100;
+      border-radius: 5px;
+      top: 45px;
+    }
+
+    .dropdown-content a {
+      color: #333;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-content a:hover { background-color: #f1f1f1; }
+    .show { display: block; }
+
     .container {
       display: flex;
       padding: 20px;
+      gap: 25px;
     }
-    .sidebar {
-      width: 25%;
+
+    .sidebar { width: 28%; }
+    .content { width: 72%; }
+
+    /* 3D Glass Box Styling */
+    .glass-box {
+      background: var(--box-bg);
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    #time {
+      font-weight: bold;
+      font-size: 1.4em;
+      color: var(--accent-color);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Search Box Styling */
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #siteSearch {
       padding: 10px;
-      background: #ddd;
+      border-radius: 20px;
+      border: none;
+      box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff;
+      outline: none;
+      width: 80%;
+      margin: 0 auto;
     }
-    .content {
-      width: 75%;
-      padding: 10px;
+
+    .search-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
     }
+
+    /* Personal Info Styling */
+    .personal-info {
+      font-family: "Constantia", serif;
+      line-height: 1.6;
+    }
+
+    /* Note Section */
+    .note-container {
+      position: relative;
+    }
+
     .note {
-      border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 100px;
+      background: var(--box-bg);
+      border-radius: 10px;
+      padding: 15px;
+      min-height: 150px;
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+      outline: none;
     }
-    .dark-mode {
-      background-color: #121212;
-      color: #eee;
+
+    /* Buttons */
+    .btn-clear {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    .dark-mode nav {
-      background: #333;
-    }
-    .dark-mode header {
-      background: #222;
+
+    button:hover { opacity: 0.8; }
+
+    .back-btn {
+      color: #3498db;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: underline;
+      display: inline-block;
+      margin-top: 15px;
     }
   </style>
 </head>
-<body>
+<body onclick="hideMenu()">
+
   <header>
     <h1>Shorna'S Log</h1>
   </header>
   
   <nav>
-    <a href="#">Not Eligible appeal</a>
-    <a href="#">Offer letter</a>
-    <a href="#">Additional</a>
-    <a href="#">Check request</a>
-    <a href="#">Withdraw</a>
-    <a href="#">Resubmission</a>
-    <a href="#">About Me</a>
+    <div class="dropdown">
+      <button onclick="toggleHome(event)" class="dropbtn">Home ▼</button>
+      <div id="homeMenu" class="dropdown-content">
+        <a href="#" onclick="showPage('Not Eligible appeal')">Not Eligible appeal</a>
+        <a href="#" onclick="showPage('Offer letter')">Offer letter</a>
+        <a href="#" onclick="showPage('Additional')">Additional</a>
+        <a href="#" onclick="showPage('Check request')">Check request</a>
+        <a href="#" onclick="showPage('Withdraw')">Withdraw</a>
+        <a href="#" onclick="showPage('Resubmission')">Resubmission</a>
+        <a href="#" onclick="showPage('About Me')">About Me</a>
+      </div>
+    </div>
   </nav>
   
   <div class="container">
     <div class="sidebar">
-      <h3>Current Time</h3>
-      <p id="time"></p>
+      <div class="glass-box">
+        <h3>Time</h3>
+        <p id="time"></p>
+      </div>
       
-      <h3>Calendar</h3>
-      <input type="date">
+      <div class="glass-box">
+        <h3>Search</h3>
+        <div class="search-container">
+          <input type="text" id="siteSearch" placeholder="Search categories..." onkeyup="handleSearchEnter(event)">
+          <div class="search-buttons">
+            <button onclick="performSearch()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Search</button>
+            <button onclick="clearSearch()" class="btn-clear">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-box">
+        <h3>Calendar</h3>
+        <input type="date" style="width:90%; border:none; padding:5px; border-radius:5px;">
+      </div>
       
-      <h3>Mode</h3>
-      <button onclick="toggleMode()">Toggle Dark/Light</button>
-      
-      <h3>Search</h3>
-      <!-- DuckDuckGo Search Box -->
-      <form action="https://duckduckgo.com/" method="get">
-        <input type="text" name="q" placeholder="Search..." style="width:80%">
-        <input type="submit" value="Search">
-      </form>
+      <div class="glass-box">
+        <h3>Mode</h3>
+        <button onclick="toggleMode()" style="padding:8px 15px; border-radius:20px; border:none; cursor:pointer; background:#555; color:white;">Toggle Dark/Light</button>
+      </div>
     </div>
     
     <div class="content">
-      <h2>Personal Information</h2>
-      <p>Name: Shorna</p>
-      <p>Info: Your personal details here...</p>
-      
-      <h2>Notes</h2>
-      <div class="note" contenteditable="true">Write your notes here...</div>
-      
-      <h2>Google Translate</h2>
-      <!-- Google Translate Widget -->
-      <div id="google_translate_element"></div>
-      
-      <h2>AI Help (Demo)</h2>
-      <!-- AI Chatbot Placeholder -->
-      <div style="border:1px solid #ccc; padding:10px; margin-top:20px;">
-        <textarea id="aiInput" rows="3" style="width:100%" placeholder="Type your question..."></textarea>
-        <button onclick="demoAI()">Ask AI</button>
-        <div id="aiOutput" style="margin-top:10px; color:#555;">AI response will appear here...</div>
+      <div id="mainContent">
+        <h2>Personal Information</h2>
+        <div class="personal-info">
+          <p><strong>Name:</strong> Shorna</p>
+          <p><strong>Designation:</strong> Junior Executive, Collection and Project</p>
+          <p><strong>Team:</strong> BCBS</p>
+          <p><strong>Email:</strong> <a href="mailto:shorna@leverngear.com" style="color:inherit;">shorna@leverngear.com</a></p>
+        </div>
+        
+        <h2>Notes</h2>
+        <div class="note-container">
+          <div id="notePad" class="note" contenteditable="true">Write your notes here...</div>
+          <button onclick="clearNotes()" class="btn-clear">Clear Notes</button>
+        </div>
+
+        <hr style="margin:40px 0; opacity: 0.2;">
+
+        <h2>Google</h2>
+        <div id="google_translate_element"></div>
+        
+        <h2 style="margin-top:30px;">AI</h2>
+        <div style="border:1px solid #ccc; padding:15px; border-radius:10px; background: rgba(255,255,255,0.1);">
+          <p>Need AI Assistance?</p>
+          <a href="https://duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat" target="_blank" style="text-decoration:none; background:#000; color:#fff; padding:10px 20px; border-radius:5px; display:inline-block;">Open DuckDuckGo AI</a>
+        </div>
       </div>
     </div>
   </div>
-  
+
   <script>
+    // 1. Time Function
     function updateTime() {
       const now = new Date();
       document.getElementById('time').textContent = now.toLocaleTimeString();
     }
     setInterval(updateTime, 1000);
     updateTime();
-    
+
+    // 2. Dark Mode
     function toggleMode() {
       document.body.classList.toggle('dark-mode');
     }
-    
-    function demoAI() {
-      let text = document.getElementById('aiInput').value;
-      document.getElementById('aiOutput').textContent = "Demo AI Response: " + text;
+
+    // 3. Dropdown Logic
+    function toggleHome(e) {
+      e.stopPropagation();
+      document.getElementById("homeMenu").classList.toggle("show");
+    }
+    function hideMenu() {
+      document.getElementById("homeMenu").classList.remove("show");
+    }
+
+    // 4. Navigation & Page Display
+    const categories = ["Not Eligible appeal", "Offer letter", "Additional", "Check request", "Withdraw", "Resubmission", "About Me"];
+
+    function showPage(pageName) {
+      const content = document.getElementById('mainContent');
+      content.innerHTML = `
+        <h2>${pageName}</h2>
+        <p>You are viewing the <strong>${pageName}</strong> section.</p>
+        <div class="back-btn" onclick="goHome()">← Back to Home</div>
+      `;
+    }
+
+    function goHome() {
+      location.reload(); // Simplest way to return to original state
+    }
+
+    // 5. Search Functionality
+    function performSearch() {
+      const query = document.getElementById('siteSearch').value.toLowerCase();
+      if(query === "") return;
+
+      const match = categories.find(cat => cat.toLowerCase().includes(query));
+      if(match) {
+        showPage(match);
+      } else {
+        alert("No category found matching: " + query);
+      }
+    }
+
+    function handleSearchEnter(e) {
+      if (e.key === 'Enter') performSearch();
+    }
+
+    function clearSearch() {
+      document.getElementById('siteSearch').value = "";
+    }
+
+    // 6. Clear Notes
+    function clearNotes() {
+      if(confirm("Are you sure you want to clear all notes?")) {
+        document.getElementById('notePad').innerHTML = "";
+      }
     }
   </script>
-  
-  <!-- Google Translate Script -->
+
   <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        {pageLanguage: 'en', includedLanguages: 'bn,en,hi'},
-        'google_translate_element'
-      );
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
     }
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
