@@ -25,20 +25,13 @@
       --accent-color: #ffccbc;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: all 0.3s ease;
-    }
-
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; }
     header { background: var(--header-bg); color: #fff; padding: 15px; text-align: center; }
-    nav { background: var(--nav-bg); display: flex; justify-content: center; padding: 10px; position: relative; }
+    nav { background: var(--nav-bg); display: flex; justify-content: center; padding: 10px; gap: 10px; }
 
     .dropdown { position: relative; }
     .dropbtn { color: white; padding: 10px 25px; cursor: pointer; border: none; background: #444; border-radius: 5px; font-size: 16px; }
-    .dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 220px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 5px; top: 45px; }
+    .dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 5px; top: 45px; }
     .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
     .dropdown-content a:hover { background-color: #f1f1f1; }
     .show { display: block; }
@@ -50,66 +43,52 @@
     .glass-box { background: var(--box-bg); padding: 15px; margin-bottom: 25px; border-radius: 15px; box-shadow: var(--shadow); text-align: center; }
     #time, #currentDateDisplay { font-weight: bold; font-size: 1.4em; color: var(--accent-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
 
-    .personal-info { font-family: "Constantia", serif; line-height: 1.6; }
-    .note { background: var(--box-bg); border-radius: 10px; padding: 15px; min-height: 150px; box-shadow: var(--shadow); margin-bottom: 10px; outline: none; }
-
-    .draft-list-item { 
-      background: var(--box-bg); padding: 12px; margin-bottom: 10px; 
-      border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    }
-    .draft-list-item:hover { transform: scale(1.01); background: #eee; color: #000; }
+    .note { background: var(--box-bg); border-radius: 10px; padding: 15px; min-height: 150px; box-shadow: var(--shadow); margin-bottom: 10px; outline: none; white-space: pre-wrap; }
     
-    .mail-view { background: white; color: #333; padding: 20px; border-radius: 10px; border: 1px solid #ccc; white-space: pre-wrap; margin-top: 15px; font-size: 14px; line-height: 1.5; text-align: left; }
+    .translation-box { margin-top: 10px; padding: 10px; background: #eef; border-radius: 8px; font-style: italic; color: #555; border-left: 5px solid var(--accent-color); }
+    
     .btn-action { padding: 8px 15px; border-radius: 5px; border: none; cursor: pointer; margin-right: 10px; font-weight: bold; }
-    .btn-copy { background: #2ecc71; color: white; }
-    .btn-back { background: #3498db; color: white; }
+    .btn-save { background: #27ae60; color: white; }
     .btn-clear { background: #e74c3c; color: white; }
 
-    #siteSearch, #draftSearch {
-      padding: 10px; border-radius: 20px; border: none; 
-      box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff;
-      outline: none; width: 85%; margin-bottom: 15px;
-    }
+    .reg-item { background: white; padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+    .btn-delete { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    
+    .ai-link { display: block; margin-top: 15px; color: #007bff; text-decoration: none; font-weight: bold; }
+    .ai-link:hover { text-decoration: underline; }
   </style>
 </head>
-<body onclick="hideMenu()">
+<body onclick="hideMenus()">
 
-  <header>
-    <h1>Shorna'S Log</h1>
-  </header>
+  <header><h1>Shorna'S Log</h1></header>
   
   <nav>
     <div class="dropdown">
-      <button onclick="toggleHome(event)" class="dropbtn">Home ▼</button>
+      <button onclick="toggleMenu(event, 'homeMenu')" class="dropbtn">Home ▼</button>
       <div id="homeMenu" class="dropdown-content">
         <a href="#" onclick="showDraftPage('notEligible')">Not Eligible appeal</a>
         <a href="#" onclick="showDraftPage('determination')">Determination</a>
         <a href="#" onclick="showDraftPage('additional')">Additional</a>
         <a href="#" onclick="showDraftPage('withdraw')">Withdraw</a>
         <a href="#" onclick="showDraftPage('technical')">Technical Issue</a>
-        <a href="#" onclick="showPlaceholderPage('Offer letter')">Offer letter</a>
-        <a href="#" onclick="showPlaceholderPage('Check request')">Check request</a>
-        <a href="#" onclick="showPlaceholderPage('Resubmission')">Resubmission</a>
-        <a href="#" onclick="showPlaceholderPage('About Me')">About Me</a>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button onclick="toggleMenu(event, 'personalMenu')" class="dropbtn">Personal ▼</button>
+      <div id="personalMenu" class="dropdown-content">
+        <a href="#" onclick="showPlaceholderPage('All Script')">All Script</a>
+        <a href="#" onclick="showRegularPage()">Regular</a>
       </div>
     </div>
   </nav>
   
   <div class="container">
     <div class="sidebar">
-      <div class="glass-box">
-        <h3>Time</h3>
-        <p id="time"></p>
-      </div>
+      <div class="glass-box"><h3>Time</h3><p id="time"></p></div>
       <div class="glass-box">
         <h3>Calendar</h3>
         <p id="currentDateDisplay"></p>
-        <input type="date" id="datePicker" style="width:90%; border-radius:5px; border:none; padding:5px; margin-top:10px;">
-      </div>
-      <div class="glass-box">
-        <h3>Search</h3>
-        <input type="text" id="siteSearch" placeholder="Search categories..." onkeyup="handleMainSearch(event)">
+        <input type="date" id="datePicker" style="width:90%; padding:5px; margin-top:10px;">
       </div>
       <div class="glass-box">
         <h3>Mode</h3>
@@ -120,176 +99,119 @@
     <div class="content">
       <div id="mainContent">
         <h2>Personal Information</h2>
-        <div class="personal-info">
-          <p><strong>Name:</strong> Shorna</p>
-          <p><strong>Designation:</strong> Junior Executive, Collection and Project</p>
-          <p><strong>Team:</strong> BCBS</p>
-          <p><strong>Email:</strong> shorna@leverngear.com</p>
+        <p><strong>Name:</strong> Shorna | <strong>Team:</strong> BCBS</p>
+        
+        <h2>Notepad</h2>
+        <div id="notePad" class="note" contenteditable="true" oninput="handleNoteInput()"></div>
+        <div class="translation-box" id="translationOutput">Bengali translation will appear here...</div>
+        
+        <div style="margin-top:10px;">
+          <button onclick="saveNote()" class="btn-save btn-action">Save to Regular</button>
+          <button onclick="clearNotes()" class="btn-clear btn-action">Clear</button>
         </div>
-        <h2>Notes</h2>
-        <div id="notePad" class="note" contenteditable="true">Write your notes here...</div>
-        <button onclick="clearNotes()" class="btn-clear btn-action">Clear Notes</button>
-        <div id="google_translate_element" style="margin-top:20px;"></div>
+        
+        <a href="https://duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat" target="_blank" class="ai-link">Open DuckDuckGo AI Chat</a>
       </div>
     </div>
   </div>
 
   <script>
+    // Load data on startup
     window.onload = function() {
-      const now = new Date();
-      const today = now.toISOString().split('T')[0];
-      document.getElementById('datePicker').value = today;
-      document.getElementById('currentDateDisplay').textContent = now.toDateString();
+      const savedNote = localStorage.getItem('shornaNote');
+      if (savedNote) document.getElementById('notePad').innerText = savedNote;
+      updateTime();
       if (localStorage.getItem('shornaMode') === 'dark') document.body.classList.add('dark-mode');
     };
 
-    const allDrafts = {
-      notEligible: [
-        {
-          keyword: "Exceeded the four-day timeline",
-          mail: "Subject: Request for Reconsideration: IDR Eligibility – DISP-4538391\n\nDear IDR Reviewer,\n\nThank you for your recent notification regarding the eligibility of our Independent Dispute Resolution (IDR) dispute.\n\nDISP-4538391 Upon thorough review of the Federal IDR process requirements and our submission timeline, we respectfully request a reconsideration of the eligibility determination for the referenced dispute. We have reviewed the IDR and found that the reason given for “Not Eligible” is not justified. Our initial EOB process date was 09/03/2025 and our negotiation submission date was 09/27/2025, According to the Federal IDR guidelines, we must submit the IDR within 34 business days from the date of the negotiation submission. According to the business day calculation our negotiation submission date was 09/27/2025 and the end date is 11/11/2025. IDR start date is 11/12/2025 and IDR end date is 11/17/2025. Our idr submission date is 03/14/2026, which, when calculated in business days, comes to the 33rd business days. According to Federal IDR guidelines, this means the IDR was submitted within the appropriate timeframe. Therefore, this case should be deemed eligible for the IDR process. We respectfully request that you reopen and review DISP-4538391.\n\nFor your reference, I have attached :\n\n*Proof of business date verifying for idr\n*Proof of business date verifying for negotiation\n*Negotiation rejection paper\n*Proof of IDR submission date\n*EOB paper\n*Negotiation paper\n\nPlease see all the document's and let us know if any additional documentation is needed to move this case forward.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Resubmitted idr not eligible for timing issue",
-          mail: "Subject: Reconsideration Request: DISP-4821305 (Resubmission of DISP-4684781)\n\nDear IPRO Team,\n\nI am writing to ask you to reconsider the decision for DISP-4821305. It was marked as not eligible because of a timing issue, but I believe there has been a misunderstanding. This is actually a resubmission of my previous dispute, DISP-4684781, which was originally filed on time. I only resubmitted it because I was instructed to fix a bundling error, not because I started a new late claim.\n\nTimeline and Facts of the Case:\nEOB Process Date: 09/19/2025\nOpen Negotiation Initiated: 10/20/2025\nOriginal IDR Submission (DISP-4684781): 12/05/2025\n\nResubmission (DISP-4821305): Following your instructions, we resubmitted the dispute using the DRG code on 12/22/2025.\n\nBasis for Reconsideration: The current dispute is a rectified resubmission made at your direction. I have attached the EOB, Negotiation submission paper including date and time also resubmission requested mail, Our resubmission paper and other documents for your reference.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Open negotiation not complete",
-          mail: "Subject: Request for Reconsideration of Eligibility Determination - IDR Dispute DISP-5466122\n\nDear C2C Innovative Solutions, Inc IDR Team,\n\nWe understand the determination was made on the grounds that \"Open negotiation not complete\" However, we respectfully believe this reason for ineligibility is in error.\n\nTimeline:\nNegotiation Submission Date: 01/20/2026\nNegotiation End Date (30 Business Days): 03/03/2026\nIDR Submission Date: 03/05/2026\nAs demonstrated by the attached documents, the IDR was initiated after the required 30-business-day open negotiation period ended. We kindly request that you review the attached documents.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Claim is not subject to the No Surprises Act (NSA)",
-          mail: "Subject: Request for Re-evaluation: Eligibility Dispute for ID DISP-4655790\n\nDear iMPROve Health IDR Team,\n\nI am writing to formally request a re-evaluation of the eligibility determination for DISP-4655790. We believe this dispute should proceed through the Federal IDR process based on the following evidence:\n\n1. Payer Recognition of QPA: The Provider Claim Summary provided by BCBS explicitly calculates and lists a QPA.\n2. Active Negotiation History: We initiated a formal Open Negotiation (Dispute ID: 100002381141) and the plan responded with a counter-offer.\n\nGiven that the payer has already calculated the QPA and participated in negotiations, we respectfully ask that you reopen this case.\n\nThanks and regards\nShorna"
-        }
-      ],
-      determination: [
-        {
-          keyword: "Determination win but offer amount 0 (zero)",
-          mail: "Subject: Correction needed for Dispute DISP-1454681\n\nDear CMS IDR Team, I am reaching out regarding a Final Written Determination Notice we just received for DISP-1454681 (dated 8/15/2025). The notice states that the IDR ruled in favor of the Initiating Party, however, in the payment table, the \"Final Offer\" and \"Qualifying Payment Amount\" are both listed as $0.00. This doesn't seem right. Could you please look into this and provide us with a corrected determination notice?\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "We lose determination but Rationale sections show we win",
-          mail: "Subject: Request for Correction: Discrepancy in Final Payment Determination (DISP-3700496)\n\nDear National Medical Reviews Team, I am writing to you regarding the Final Payment Determination for DISP-3700496. In the Rationale sections, it is stated: \"the Initiating Party’s offer best represents the value... I have determined the Initiating Party prevailed\". However, the summary identified BCBS of TX as the prevailing party. This seems to be a critical error. Could you please review these determinations again?\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Fees and Offer from One Party Only",
-          mail: "Subject: Appeal of Final Payment Determination (Mohammad Islam)\n\nGood afternoon! Improve IDR Team, We formally appeal the Final Payment Determination for DISP-4781390. Contrary to the findings, the Initiating Party fully complied with the requirements. We have attached Proof of Offer Submission and Proof of Fee Payment. We request that iMPROve Health review the validly submitted offer and Payment status.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "We lose determination but Rationale sections show we win (Batched)",
-          mail: "Subject: Request for Correction: Discrepancy in Final Payment Determination (DISP-2235298)\n\nDear National Medical Reviews Team, I am writing to you regarding DISP-2235298. I noticed a significant discrepancy in the Rationale sections for all three determinations. It states the Initiating Party’s offer represents the best value, but concludes that the Non-Initiating Party prevailed. Please review and issue a corrected document.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Fees and Offer were from one party only (no invoice received)",
-          mail: "Subject: Request to Reopen Dispute DISP-4633834\n\nDear arbitrator, We lost the dispute because \"Fees and Offer were from one party only.\" However, we submitted our offer on Dec 11, 2025 and we never received an invoice to pay the IDR fees. It feels unfair to be marked as non-prevailing when we were proactive. Please reopen this dispute.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Determination win but incorrect win offer amount",
-          mail: "Subject: Request for Correction: Payment Amount Discrepancy (DISP-4921055)\n\nDear NMR Team, While we are the prevailing party in all 3 line items for DISP-4921055, the determination incorrectly lists our offer as $684.79. However, our final offer was actually $1,827.00. Please update the determination to reflect the correct amount.\n\nThanks and regards\nShorna"
-        }
-      ],
-      additional: [
-        {
-          keyword: "Please provide ERISA Plan? provider group name and ERS Chapter 1551",
-          mail: "Subject: Send by web portal\n\nDear C2C Innovative Solutions Team,\nWe are providing the requested information regarding the eligibility of dispute DISP-5370139 for patient ERIC RICE. Please find the details below:\n• Is the plan a Self-Insured/ERISA plan? Yes, it is a Self-Insured plan.\n• Group Name: The group name is CUSHMAN & WAKEFIELD.\n• Is it an ERS or TRS plan? No, it is a private employer-sponsored plan.\nAttached Documents for Proof: Insurance Card, EOB, Patient Eligibility Report.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Remark code V74 new appeal format",
-          mail: "Subject: Reply by mail\n\nDear FHAS IDR Team, This email is in response to your request for additional information regarding DISP-5087362. The NIP objected citing Remark Code V74. We contest this because: Official PAID status on EOB, Established Patient Responsibility, and Billing Protections were applied. We request the IDRE to overrule the objection.\n\nThanks and regards\nShorna"
-        }
-      ],
-      withdraw: [
-        {
-          keyword: "We mail to cms for Withdrawal but they reply that assigned Certified IDR Entity for Withdraw",
-          mail: "Subject: Request to Withdraw IDR Dispute: DISP-5227497\n\nDear iMPROve Health IDR Team,\nI am writing to formally request the withdrawal of DISP-5227497. CMS directed us to coordinate directly with you. Reason: This dispute was submitted in error. We kindly request you to process this withdrawal and ignore this idr submission.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Wrong idr due to Provider of air ambulance services",
-          mail: "Subject: Request to Withdraw Dispute – 4635481\n\nDear IDR Department, We would like to withdraw DISP-4635481. While submitting, we mistakenly selected “Provider of air ambulance services” instead of “Health care facility”. Please ignore this IDR.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Withdrawn for invoice",
-          mail: "Subject: Regarding Invoice for Withdrawn Disputes - DISP-4636368\n\nDear MET IDR Team, We received an invoice dated Jan 23, but these disputes were duplicates and already withdrawn (confirmed on 12/12/2025). Please review your records and cancel these invoices.\n\nThanks and regards\nShorna"
-        }
-      ],
-      technical: [
-        {
-          keyword: "Technical Issue",
-          mail: "Subject: Technical Issue: Unable to Upload Documents for DISP-4745268\n\nDear iMPROve Health Team,\n\nWe received your request for additional info for dispute DISP-4745268. We have already created our portal account for (KILLEEN EMERGENCY CENTER LLC), but we are having a technical problem: there is no option or button to upload documents on the page. I have attached the Portal screenshot. Since the deadline is 01/27/2026, could you please help us fix this?\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Technical Issue Second reply",
-          mail: "Subject: Technical Issue: Unable to Upload Documents for DISP-4745268\n\nDear iMPROve Health Team,\n\nThanks for the reply. We tried clearing the cache but the upload button is still missing. \nUser ID: sabbir.hossain@leverngear.com\nPassword: Sabbir@123\nFacility: KILLEEN EMERGENCY CENTER LLC\nSince our deadline is 01/27/2026, could you please have your tech team look into this?\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Technical Issue 3rd reply",
-          mail: "Subject: Technical Issue: Unable to Upload Documents for DISP-4745268\n\nDear iMPROve Health Team,\n\nI’m following up. The button is still missing. Since today (Jan 27) is the deadline, I have attached the EOB, Claim Forms, and Negotiation papers here. Please include them manually. Also, please fix our portal access for the next deadline on 01/30/2026.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Technical Issue 4th reply",
-          mail: "Subject: Technical Issue: Unable to Upload Documents for DISP-4745268\n\nDear iMPROve Health Team,\n\nThank you for the update. We checked again, but the button is still not appearing. Could you clarify which specific account was fixed? We just received another request for DISP-4701646 and don't want to miss the deadline. Please look into this as a priority.\n\nThanks and regards\nShorna"
-        },
-        {
-          keyword: "Technical Issue and previously received not eligible mail",
-          mail: "Subject: Technical Issue: Unable to Upload Documents for DISP-4745268\n\nDear iMPROve Health Team,\n\nWe received your request for additional info for DISP-4655790. We cannot see the upload button for (ODESSA EMERGENCY CENTER LLC). We received a \"not eligible\" mail on 03/26/2026 and appealed on 04/03/2026. Is the button missing due to the previous status? \nUser ID: shorna@leverngear.com\nPassword: 26v+4BkCLayVc+XX\nDeadline: 04/08/2026. Please help.\n\nThanks and regards\nShorna"
-        }
-      ]
-    };
+    function handleNoteInput() {
+      const text = document.getElementById('notePad').innerText;
+      localStorage.setItem('shornaNote', text);
+      translateText(text);
+    }
 
-    function updateTime() { 
+    // Basic English to Bangla Logic (Placeholder for actual API integration if needed)
+    async function translateText(text) {
+      if(!text.trim()) { document.getElementById('translationOutput').innerText = "..."; return; }
+      // Using a free public API for demonstration
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURI(text)}`);
+        const data = await res.json();
+        document.getElementById('translationOutput').innerText = data[0][0][0];
+      } catch (e) { document.getElementById('translationOutput').innerText = "Translating..."; }
+    }
+
+    function saveNote() {
+      const text = document.getElementById('notePad').innerText;
+      if(!text.trim()) return;
+      const date = new Date().toLocaleString();
+      let regularFiles = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      regularFiles.push({ date: date, content: text });
+      localStorage.setItem('shornaRegular', JSON.stringify(regularFiles));
+      alert("Saved to Regular!");
+    }
+
+    function showRegularPage() {
+      const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      let html = `<h2>Regular Files</h2><button class="btn-back btn-action" onclick="location.reload()">Back</button><div style="margin-top:20px;">`;
+      files.forEach((file, index) => {
+        html += `
+          <div class="reg-item">
+            <span onclick="viewFile(${index})" style="cursor:pointer; color:blue;">File: ${file.date}</span>
+            <button class="btn-delete" onclick="deleteFile(${index})">Delete</button>
+          </div>`;
+      });
+      document.getElementById('mainContent').innerHTML = html + `</div>`;
+    }
+
+    function viewFile(index) {
+      const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      const file = files[index];
+      document.getElementById('mainContent').innerHTML = `
+        <h2>File Date: ${file.date}</h2>
+        <div class="mail-view">${file.content}</div>
+        <button class="btn-back btn-action" onclick="showRegularPage()">Back to List</button>
+      `;
+    }
+
+    function deleteFile(index) {
+      let files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      files.splice(index, 1);
+      localStorage.setItem('shornaRegular', JSON.stringify(files));
+      showRegularPage();
+    }
+
+    function clearNotes() {
+      document.getElementById('notePad').innerText = "";
+      localStorage.removeItem('shornaNote');
+      document.getElementById('translationOutput').innerText = "...";
+    }
+
+    function toggleMenu(e, id) {
+      e.stopPropagation();
+      hideMenus();
+      document.getElementById(id).classList.toggle("show");
+    }
+
+    function hideMenus() {
+      document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+
+    function updateTime() {
       const now = new Date();
-      document.getElementById('time').textContent = now.toLocaleTimeString(); 
+      document.getElementById('time').textContent = now.toLocaleTimeString();
       document.getElementById('currentDateDisplay').textContent = now.toDateString();
     }
-    setInterval(updateTime, 1000); updateTime();
+    setInterval(updateTime, 1000);
 
-    function toggleMode() { 
+    function toggleMode() {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('shornaMode', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     }
-    
-    function toggleHome(e) { e.stopPropagation(); document.getElementById("homeMenu").classList.toggle("show"); }
-    function hideMenu() { document.getElementById("homeMenu").classList.remove("show"); }
 
-    function showDraftPage(categoryKey) {
-      const drafts = allDrafts[categoryKey];
-      const titles = { notEligible: "Not Eligible Appeal", determination: "Determination", additional: "Additional", withdraw: "Withdraw", technical: "Technical Issue" };
-      const content = document.getElementById('mainContent');
-      let listHtml = `<h2>${titles[categoryKey]} - Draft List</h2><input type="text" id="draftSearch" placeholder="Search keywords..." onkeyup="filterDrafts()"><button onclick="clearDraftSearch()" class="btn-clear btn-action" style="margin-bottom:15px;">Clear Search</button><div id="draftListContainer">`;
-      drafts.forEach((item, index) => {
-        listHtml += `<div class="draft-list-item" onclick="viewMail('${categoryKey}', ${index})"><span><strong>Keyword:</strong> ${item.keyword}</span><span>➔</span></div>`;
-      });
-      listHtml += `</div><button class="btn-back btn-action" onclick="location.reload()">Back to Home</button>`;
-      content.innerHTML = listHtml;
-    }
-
-    function viewMail(categoryKey, index) {
-      const item = allDrafts[categoryKey][index];
-      document.getElementById('mainContent').innerHTML = `<h3>Keyword: ${item.keyword}</h3><div class="mail-view" id="mailText">${item.mail}</div><div style="margin-top:20px;"><button class="btn-copy btn-action" onclick="copyMail()">Copy Mail</button><button class="btn-back btn-action" onclick="showDraftPage('${categoryKey}')">Back to List</button></div>`;
-    }
-
-    function copyMail() { navigator.clipboard.writeText(document.getElementById('mailText').innerText).then(() => alert("Mail copied!")); }
-    function filterDrafts() {
-      let val = document.getElementById('draftSearch').value.toLowerCase();
-      let items = document.getElementsByClassName('draft-list-item');
-      for (let item of items) item.style.display = item.innerText.toLowerCase().includes(val) ? "flex" : "none";
-    }
-    function clearDraftSearch() { document.getElementById('draftSearch').value = ""; filterDrafts(); }
-    
-    function handleMainSearch(e) {
-      if(e.key === "Enter") {
-        let val = e.target.value.toLowerCase();
-        if(val.includes("not eligible")) showDraftPage('notEligible');
-        else if(val.includes("determination")) showDraftPage('determination');
-        else if(val.includes("additional")) showDraftPage('additional');
-        else if(val.includes("withdraw")) showDraftPage('withdraw');
-        else if(val.includes("technical")) showDraftPage('technical');
-      }
-    }
-    function showPlaceholderPage(name) { document.getElementById('mainContent').innerHTML = `<h2>${name}</h2><p>Drafts for ${name} will be added soon.</p><button class="btn-back btn-action" onclick="location.reload()">Back to Home</button>`; }
-    function clearNotes() { document.getElementById('notePad').innerHTML = ""; }
+    // --- (Keep allDrafts and showDraftPage from previous code here) ---
+    const allDrafts = { /* ... paste your previous drafts here ... */ };
+    // (সব ড্রাফট কোড আগের মতোই থাকবে, শুধু showDraftPage ফাংশনটি কল করলেই হবে)
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script type="text/javascript">function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }</script>
 </body>
 </html>
