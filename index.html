@@ -124,8 +124,8 @@
   </div>
 
   <script>
-    // --- Drafts Data ---
-    const allDrafts = {
+    // --- Initial System Data ---
+    const systemDrafts = {
       notEligible: [{ keyword: "Exceeded timeline", mail: "Subject: Reconsideration DISP-4538391\nMessage: The dispute was rejected due to timeline issues..." }],
       determination: [{ keyword: "Win but $0 offer", mail: "Subject: Correction DISP-1454681\nMessage: Rationale is missing for the $0 offer..." }],
       additional: [{ keyword: "ERISA/Group Name", mail: "Subject: Additional Info DISP-5370139..." }],
@@ -174,11 +174,7 @@
       const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
       let html = `<h2>Regular Files</h2><button class="btn-back btn-action" onclick="location.reload()">Back</button><div style="margin-top:20px;">`;
       files.forEach((file, index) => {
-        html += `
-          <div class="reg-item">
-            <span onclick="viewFile(${index})" style="cursor:pointer; color:blue;">File: ${file.date}</span>
-            <button class="btn-delete" onclick="deleteFile(${index})">Delete</button>
-          </div>`;
+        html += `<div class="reg-item"><span onclick="viewFile(${index})" style="cursor:pointer; color:blue;">File: ${file.date}</span><button class="btn-delete" onclick="deleteFile(${index})">Delete</button></div>`;
       });
       document.getElementById('mainContent').innerHTML = html + `</div>`;
     }
@@ -186,11 +182,7 @@
     function viewFile(index) {
       const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
       const file = files[index];
-      document.getElementById('mainContent').innerHTML = `
-        <h2>File Date: ${file.date}</h2>
-        <div class="mail-view">${file.content}</div>
-        <button class="btn-back btn-action" onclick="showRegularPage()">Back to List</button>
-      `;
+      document.getElementById('mainContent').innerHTML = `<h2>File Date: ${file.date}</h2><div class="mail-view">${file.content}</div><button class="btn-back btn-action" onclick="showRegularPage()">Back to List</button>`;
     }
 
     function deleteFile(index) {
@@ -208,34 +200,81 @@
       document.getElementById('translationOutput').innerText = "...";
     }
 
-    // --- Script Page Functions ---
-    function showScriptPage() {
-      let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
-      let html = `<h2>All Scripts</h2><button class="btn-save btn-action" onclick="addNewScript()">+ Add New</button><div style="margin-top:20px;">`;
+    // --- HOME DRAFT ADD/VIEW SYSTEM ---
+    function showDraftPage(cat) {
+      let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+      let html = `<h2>${cat} Drafts</h2><button class="btn-save btn-action" onclick="addNewDraft('${cat}')">+ Add New Draft</button><div style="margin-top:20px;">`;
       
-      fixedScripts.forEach((s, i) => {
-        html += `<div class="list-item" onclick="viewScript('fixed', ${i})"><span>${s.name} (System)</span><span>➔</span></div>`;
+      // Show System Drafts
+      systemDrafts[cat].forEach((d, i) => {
+        html += `<div class="list-item" onclick="viewDraft('system', '${cat}', ${i})"><span>${d.keyword} (System)</span><span>➔</span></div>`;
       });
 
-      userScripts.forEach((s, i) => {
+      // Show User Saved Drafts
+      userDrafts.forEach((d, i) => {
         html += `<div class="list-item">
-          <span onclick="viewScript('user', ${i})" style="flex-grow:1; cursor:pointer;">${s.name}</span>
-          <button class="btn-delete" onclick="deleteUserScript(${i})">Delete</button>
+          <span onclick="viewDraft('user', '${cat}', ${i})" style="flex-grow:1; cursor:pointer;">${d.keyword}</span>
+          <button class="btn-delete" onclick="deleteUserDraft('${cat}', ${i})">Delete</button>
         </div>`;
       });
+
+      html += `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
+      document.getElementById('mainContent').innerHTML = html;
+    }
+
+    function addNewDraft(cat) {
+      document.getElementById('mainContent').innerHTML = `
+        <h2>Add New Draft to ${cat}</h2>
+        <input type="text" id="newDraftKey" placeholder="Keyword / Title" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
+        <textarea id="newDraftMail" placeholder="Paste Mail Content here..." style="width:90%; height:200px; padding:10px; border-radius:5px; border:1px solid #ccc;"></textarea>
+        <div style="margin-top:10px;">
+          <button class="btn-save btn-action" onclick="saveNewDraft('${cat}')">Save Draft</button>
+          <button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Cancel</button>
+        </div>`;
+    }
+
+    function saveNewDraft(cat) {
+      const keyword = document.getElementById('newDraftKey').value;
+      const mail = document.getElementById('newDraftMail').value;
+      if(!keyword || !mail) return alert("Please fill both fields!");
+      let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+      userDrafts.push({ keyword, mail });
+      localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+      showDraftPage(cat);
+    }
+
+    function deleteUserDraft(cat, index) {
+      if(confirm("Delete this draft?")) {
+        let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat));
+        userDrafts.splice(index, 1);
+        localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+        showDraftPage(cat);
+      }
+    }
+
+    function viewDraft(type, cat, i) {
+      const d = (type === 'system') ? systemDrafts[cat][i] : JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat))[i];
+      document.getElementById('mainContent').innerHTML = `
+        <h3>${d.keyword}</h3>
+        <div class="mail-view" id="copyMail">${d.mail}</div>
+        <div style="margin-top:20px;">
+          <button class="btn-copy btn-action" onclick="copyToClipboard('copyMail')">Copy Draft</button>
+          <button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Back</button>
+        </div>`;
+    }
+
+    // --- SCRIPT SYSTEM (Existing) ---
+    function showScriptPage() {
+      let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+      let html = `<h2>All Scripts</h2><button class="btn-save btn-action" onclick="addNewScript()">+ Add New Script</button><div style="margin-top:20px;">`;
+      fixedScripts.forEach((s, i) => { html += `<div class="list-item" onclick="viewScript('fixed', ${i})"><span>${s.name} (System)</span><span>➔</span></div>`; });
+      userScripts.forEach((s, i) => { html += `<div class="list-item"><span onclick="viewScript('user', ${i})" style="flex-grow:1; cursor:pointer;">${s.name}</span><button class="btn-delete" onclick="deleteUserScript(${i})">Delete</button></div>`; });
       html += `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
       document.getElementById('mainContent').innerHTML = html;
     }
 
     function addNewScript() {
-      document.getElementById('mainContent').innerHTML = `
-        <h2>Add New Script</h2>
-        <input type="text" id="newScriptName" placeholder="Script Name" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
-        <textarea id="newScriptContent" placeholder="Paste code here..." style="width:90%; height:200px; padding:10px; border-radius:5px; border:1px solid #ccc;"></textarea>
-        <div style="margin-top:10px;">
-          <button class="btn-save btn-action" onclick="saveNewScript()">Save Script</button>
-          <button class="btn-back btn-action" onclick="showScriptPage()">Cancel</button>
-        </div>`;
+      document.getElementById('mainContent').innerHTML = `<h2>Add New Script</h2><input type="text" id="newScriptName" placeholder="Script Name" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;"><textarea id="newScriptContent" placeholder="Paste code here..." style="width:90%; height:200px; padding:10px; border-radius:5px; border:1px solid #ccc;"></textarea><div style="margin-top:10px;"><button class="btn-save btn-action" onclick="saveNewScript()">Save Script</button><button class="btn-back btn-action" onclick="showScriptPage()">Cancel</button></div>`;
     }
 
     function saveNewScript() {
@@ -259,13 +298,7 @@
 
     function viewScript(type, index) {
       const script = (type === 'fixed') ? fixedScripts[index] : JSON.parse(localStorage.getItem('shornaUserScripts'))[index];
-      document.getElementById('mainContent').innerHTML = `
-        <h3>${script.name}</h3>
-        <div class="mail-view" id="scriptCopyText">${script.content}</div>
-        <div style="margin-top:20px;">
-          <button class="btn-copy btn-action" onclick="copyToClipboard('scriptCopyText')">Copy Script</button>
-          <button class="btn-back btn-action" onclick="showScriptPage()">Back</button>
-        </div>`;
+      document.getElementById('mainContent').innerHTML = `<h3>${script.name}</h3><div class="mail-view" id="scriptCopyText">${script.content}</div><div style="margin-top:20px;"><button class="btn-copy btn-action" onclick="copyToClipboard('scriptCopyText')">Copy Script</button><button class="btn-back btn-action" onclick="showScriptPage()">Back</button></div>`;
     }
 
     function copyToClipboard(id) {
@@ -273,48 +306,12 @@
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
     }
 
-    function showDraftPage(cat) {
-      let html = `<h2>${cat} Drafts</h2>`;
-      allDrafts[cat].forEach((d, i) => {
-        html += `<div class="list-item" onclick="viewDraft('${cat}', ${i})"><span>${d.keyword}</span><span>➔</span></div>`;
-      });
-      html += `<button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
-      document.getElementById('mainContent').innerHTML = html;
-    }
-
-    function viewDraft(cat, i) {
-      const d = allDrafts[cat][i];
-      document.getElementById('mainContent').innerHTML = `
-        <h3>${d.keyword}</h3>
-        <div class="mail-view" id="copyMail">${d.mail}</div>
-        <div style="margin-top:20px;">
-          <button class="btn-copy btn-action" onclick="copyToClipboard('copyMail')">Copy Draft</button>
-          <button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Back</button>
-        </div>`;
-    }
-
     // --- Core UI Functions ---
-    function toggleMenu(e, id) {
-      e.stopPropagation();
-      hideMenus();
-      document.getElementById(id).classList.toggle("show");
-    }
-
-    function hideMenus() {
-      document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-    }
-
-    function updateTime() {
-      const now = new Date();
-      document.getElementById('time').textContent = now.toLocaleTimeString();
-      document.getElementById('currentDateDisplay').textContent = now.toDateString();
-    }
+    function toggleMenu(e, id) { e.stopPropagation(); hideMenus(); document.getElementById(id).classList.toggle("show"); }
+    function hideMenus() { document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); }
+    function updateTime() { const now = new Date(); document.getElementById('time').textContent = now.toLocaleTimeString(); document.getElementById('currentDateDisplay').textContent = now.toDateString(); }
     setInterval(updateTime, 1000);
-
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('shornaMode', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
+    function toggleMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('shornaMode', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); }
   </script>
 </body>
 </html>
