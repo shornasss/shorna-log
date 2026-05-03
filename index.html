@@ -30,7 +30,20 @@
     nav { background: var(--nav-bg); display: flex; justify-content: center; padding: 10px; gap: 10px; }
 
     .dropdown { position: relative; }
-    .dropbtn { color: white; padding: 10px 25px; cursor: pointer; border: none; background: #444; border-radius: 5px; font-size: 16px; }
+    .dropbtn { color: white; padding: 10px 25px; cursor: pointer; border: none; background: #444; border-radius: 5px; font-size: 16px; transition: transform 0.2s; }
+    .dropbtn:active { transform: translateY(3px); }
+    
+    /* 3D Trash Button Style */
+    .trash-btn { 
+        background: #e74c3c; 
+        box-shadow: 0 4px #c0392b;
+        border-radius: 5px;
+    }
+    .trash-btn:active {
+        box-shadow: 0 1px #c0392b;
+        transform: translateY(3px);
+    }
+
     .dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 5px; top: 45px; }
     .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
     .dropdown-content a:hover { background-color: #f1f1f1; }
@@ -52,6 +65,7 @@
     .btn-clear { background: #e74c3c; color: white; }
     .btn-copy { background: #2ecc71; color: white; }
     .btn-back { background: #3498db; color: white; }
+    .btn-restore { background: #f39c12; color: white; }
 
     .reg-item, .list-item { background: white; padding: 10px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
     .btn-delete { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
@@ -83,6 +97,8 @@
         <a href="#" onclick="showRegularPage()">Regular</a>
       </div>
     </div>
+    <!-- 3D Shape Trash Menu -->
+    <button onclick="showTrashPage()" class="dropbtn trash-btn">🗑 Trash</button>
   </nav>
   
   <div class="container">
@@ -137,7 +153,6 @@
       { name: "Tracking sheet er delete howa data", content: "function searchIDRMailData() {\n  var ui = SpreadsheetApp.getUi();\n  var input = ui.prompt(\"Enter Dispute IDs\", \"Example: DISP-5424859\", ui.ButtonSet.OK_CANCEL);\n  if (input.getSelectedButton() !== ui.Button.OK) return;\n  // ... script logic ...\n}" }
     ];
 
-    // Load data on startup
     window.onload = function() {
       const savedNote = localStorage.getItem('shornaNote');
       if (savedNote) document.getElementById('notePad').innerText = savedNote;
@@ -170,6 +185,102 @@
       alert("Saved to Regular!");
     }
 
+    // --- TRASH LOGIC ---
+    function moveToTrash(item, source) {
+      let trash = JSON.parse(localStorage.getItem('shornaTrash') || "[]");
+      trash.push({ ...item, source: source, deletedAt: new Date().toLocaleString() });
+      localStorage.setItem('shornaTrash', JSON.stringify(trash));
+    }
+
+    function showTrashPage() {
+      let trash = JSON.parse(localStorage.getItem('shornaTrash') || "[]");
+      let html = `<h2>🗑 Trash Bin</h2><button class="btn-back btn-action" onclick="location.reload()">Back</button><div style="margin-top:20px;">`;
+      
+      if(trash.length === 0) { html += "<p>Trash is empty.</p>"; }
+      
+      trash.forEach((item, index) => {
+        let label = item.name || item.keyword || `Regular File (${item.date})`;
+        html += `
+          <div class="reg-item">
+            <div style="text-align:left;">
+                <strong>${label}</strong><br>
+                <small>From: ${item.source} | Deleted: ${item.deletedAt}</small>
+            </div>
+            <div>
+                <button class="btn-restore btn-action" onclick="restoreItem(${index})">Restore</button>
+                <button class="btn-delete" onclick="permanentDelete(${index})">Delete</button>
+            </div>
+          </div>`;
+      });
+      document.getElementById('mainContent').innerHTML = html + `</div>`;
+    }
+
+    function restoreItem(index) {
+      let trash = JSON.parse(localStorage.getItem('shornaTrash'));
+      let item = trash[index];
+      
+      if(item.source === 'regular') {
+        let data = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+        data.push(item);
+        localStorage.setItem('shornaRegular', JSON.stringify(data));
+      } else if(item.source === 'script') {
+        let data = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+        data.push(item);
+        localStorage.setItem('shornaUserScripts', JSON.stringify(data));
+      } else if(item.source.startsWith('draft_')) {
+        let cat = item.source.replace('draft_', '');
+        let data = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+        data.push(item);
+        localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(data));
+      }
+      
+      trash.splice(index, 1);
+      localStorage.setItem('shornaTrash', JSON.stringify(trash));
+      showTrashPage();
+      alert("Item Restored!");
+    }
+
+    function permanentDelete(index) {
+      if(confirm("Permanently delete this item? This cannot be undone.")) {
+        let trash = JSON.parse(localStorage.getItem('shornaTrash'));
+        trash.splice(index, 1);
+        localStorage.setItem('shornaTrash', JSON.stringify(trash));
+        showTrashPage();
+      }
+    }
+
+    // --- UPDATED DELETE FUNCTIONS TO USE TRASH ---
+    function deleteFile(index) {
+        if(confirm("Move to Trash?")) {
+            let files = JSON.parse(localStorage.getItem('shornaRegular'));
+            let item = files.splice(index, 1)[0];
+            moveToTrash(item, 'regular');
+            localStorage.setItem('shornaRegular', JSON.stringify(files));
+            showRegularPage();
+        }
+    }
+
+    function deleteUserScript(index) {
+        if(confirm("Move to Trash?")) {
+            let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts'));
+            let item = userScripts.splice(index, 1)[0];
+            moveToTrash(item, 'script');
+            localStorage.setItem('shornaUserScripts', JSON.stringify(userScripts));
+            showScriptPage();
+        }
+    }
+
+    function deleteUserDraft(cat, index) {
+        if(confirm("Move to Trash?")) {
+            let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat));
+            let item = userDrafts.splice(index, 1)[0];
+            moveToTrash(item, 'draft_' + cat);
+            localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+            showDraftPage(cat);
+        }
+    }
+
+    // --- OTHER PAGES (FROM ORIGINAL CODE) ---
     function showRegularPage() {
       const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
       let html = `<h2>Regular Files</h2><button class="btn-back btn-action" onclick="location.reload()">Back</button><div style="margin-top:20px;">`;
@@ -185,85 +296,38 @@
       document.getElementById('mainContent').innerHTML = `<h2>File Date: ${file.date}</h2><div class="mail-view">${file.content}</div><button class="btn-back btn-action" onclick="showRegularPage()">Back to List</button>`;
     }
 
-    function deleteFile(index) {
-      if(confirm("Delete this note?")) {
-        let files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
-        files.splice(index, 1);
-        localStorage.setItem('shornaRegular', JSON.stringify(files));
-        showRegularPage();
-      }
-    }
-
-    function clearNotes() {
-      document.getElementById('notePad').innerText = "";
-      localStorage.removeItem('shornaNote');
-      document.getElementById('translationOutput').innerText = "...";
-    }
-
-    // --- HOME DRAFT ADD/VIEW SYSTEM ---
     function showDraftPage(cat) {
       let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
       let html = `<h2>${cat} Drafts</h2><button class="btn-save btn-action" onclick="addNewDraft('${cat}')">+ Add New Draft</button><div style="margin-top:20px;">`;
-      
-      // Show System Drafts
       systemDrafts[cat].forEach((d, i) => {
         html += `<div class="list-item" onclick="viewDraft('system', '${cat}', ${i})"><span>${d.keyword} (System)</span><span>➔</span></div>`;
       });
-
-      // Show User Saved Drafts
       userDrafts.forEach((d, i) => {
-        html += `<div class="list-item">
-          <span onclick="viewDraft('user', '${cat}', ${i})" style="flex-grow:1; cursor:pointer;">${d.keyword}</span>
-          <button class="btn-delete" onclick="deleteUserDraft('${cat}', ${i})">Delete</button>
-        </div>`;
+        html += `<div class="list-item"><span onclick="viewDraft('user', '${cat}', ${i})" style="flex-grow:1; cursor:pointer;">${d.keyword}</span><button class="btn-delete" onclick="deleteUserDraft('${cat}', ${i})">Delete</button></div>`;
       });
-
       html += `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
       document.getElementById('mainContent').innerHTML = html;
     }
 
     function addNewDraft(cat) {
-      document.getElementById('mainContent').innerHTML = `
-        <h2>Add New Draft to ${cat}</h2>
-        <input type="text" id="newDraftKey" placeholder="Keyword / Title" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
-        <textarea id="newDraftMail" placeholder="Paste Mail Content here..." style="width:90%; height:200px; padding:10px; border-radius:5px; border:1px solid #ccc;"></textarea>
-        <div style="margin-top:10px;">
-          <button class="btn-save btn-action" onclick="saveNewDraft('${cat}')">Save Draft</button>
-          <button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Cancel</button>
-        </div>`;
+      document.getElementById('mainContent').innerHTML = `<h2>Add New Draft to ${cat}</h2><input type="text" id="newDraftKey" placeholder="Keyword" style="width:90%; padding:10px; margin-bottom:10px;"><textarea id="newDraftMail" style="width:90%; height:200px; padding:10px;"></textarea><br><button class="btn-save btn-action" onclick="saveNewDraft('${cat}')">Save</button><button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Cancel</button>`;
     }
 
     function saveNewDraft(cat) {
       const keyword = document.getElementById('newDraftKey').value;
       const mail = document.getElementById('newDraftMail').value;
-      if(!keyword || !mail) return alert("Please fill both fields!");
-      let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
-      userDrafts.push({ keyword, mail });
-      localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+      if(!keyword || !mail) return alert("Fill both fields!");
+      let data = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+      data.push({ keyword, mail });
+      localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(data));
       showDraftPage(cat);
-    }
-
-    function deleteUserDraft(cat, index) {
-      if(confirm("Delete this draft?")) {
-        let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat));
-        userDrafts.splice(index, 1);
-        localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
-        showDraftPage(cat);
-      }
     }
 
     function viewDraft(type, cat, i) {
       const d = (type === 'system') ? systemDrafts[cat][i] : JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat))[i];
-      document.getElementById('mainContent').innerHTML = `
-        <h3>${d.keyword}</h3>
-        <div class="mail-view" id="copyMail">${d.mail}</div>
-        <div style="margin-top:20px;">
-          <button class="btn-copy btn-action" onclick="copyToClipboard('copyMail')">Copy Draft</button>
-          <button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Back</button>
-        </div>`;
+      document.getElementById('mainContent').innerHTML = `<h3>${d.keyword}</h3><div class="mail-view" id="copyMail">${d.mail}</div><button class="btn-copy btn-action" onclick="copyToClipboard('copyMail')">Copy</button><button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Back</button>`;
     }
 
-    // --- SCRIPT SYSTEM (Existing) ---
     function showScriptPage() {
       let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
       let html = `<h2>All Scripts</h2><button class="btn-save btn-action" onclick="addNewScript()">+ Add New Script</button><div style="margin-top:20px;">`;
@@ -274,39 +338,26 @@
     }
 
     function addNewScript() {
-      document.getElementById('mainContent').innerHTML = `<h2>Add New Script</h2><input type="text" id="newScriptName" placeholder="Script Name" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;"><textarea id="newScriptContent" placeholder="Paste code here..." style="width:90%; height:200px; padding:10px; border-radius:5px; border:1px solid #ccc;"></textarea><div style="margin-top:10px;"><button class="btn-save btn-action" onclick="saveNewScript()">Save Script</button><button class="btn-back btn-action" onclick="showScriptPage()">Cancel</button></div>`;
+      document.getElementById('mainContent').innerHTML = `<h2>Add New Script</h2><input type="text" id="newScriptName" style="width:90%; padding:10px; margin-bottom:10px;"><textarea id="newScriptContent" style="width:90%; height:200px; padding:10px;"></textarea><br><button class="btn-save btn-action" onclick="saveNewScript()">Save</button><button class="btn-back btn-action" onclick="showScriptPage()">Cancel</button>`;
     }
 
     function saveNewScript() {
       const name = document.getElementById('newScriptName').value;
       const content = document.getElementById('newScriptContent').value;
-      if(!name || !content) return alert("Please fill both fields!");
-      let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
-      userScripts.push({ name, content });
-      localStorage.setItem('shornaUserScripts', JSON.stringify(userScripts));
+      if(!name || !content) return alert("Fill both fields!");
+      let data = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+      data.push({ name, content });
+      localStorage.setItem('shornaUserScripts', JSON.stringify(data));
       showScriptPage();
-    }
-
-    function deleteUserScript(index) {
-      if(confirm("Delete this script?")) {
-        let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts'));
-        userScripts.splice(index, 1);
-        localStorage.setItem('shornaUserScripts', JSON.stringify(userScripts));
-        showScriptPage();
-      }
     }
 
     function viewScript(type, index) {
       const script = (type === 'fixed') ? fixedScripts[index] : JSON.parse(localStorage.getItem('shornaUserScripts'))[index];
-      document.getElementById('mainContent').innerHTML = `<h3>${script.name}</h3><div class="mail-view" id="scriptCopyText">${script.content}</div><div style="margin-top:20px;"><button class="btn-copy btn-action" onclick="copyToClipboard('scriptCopyText')">Copy Script</button><button class="btn-back btn-action" onclick="showScriptPage()">Back</button></div>`;
+      document.getElementById('mainContent').innerHTML = `<h3>${script.name}</h3><div class="mail-view" id="scriptCopyText">${script.content}</div><button class="btn-copy btn-action" onclick="copyToClipboard('scriptCopyText')">Copy</button><button class="btn-back btn-action" onclick="showScriptPage()">Back</button>`;
     }
 
-    function copyToClipboard(id) {
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
-    }
-
-    // --- Core UI Functions ---
+    function clearNotes() { document.getElementById('notePad').innerText = ""; localStorage.removeItem('shornaNote'); document.getElementById('translationOutput').innerText = "..."; }
+    function copyToClipboard(id) { const text = document.getElementById(id).innerText; navigator.clipboard.writeText(text).then(() => alert("Copied!")); }
     function toggleMenu(e, id) { e.stopPropagation(); hideMenus(); document.getElementById(id).classList.toggle("show"); }
     function hideMenus() { document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); }
     function updateTime() { const now = new Date(); document.getElementById('time').textContent = now.toLocaleTimeString(); document.getElementById('currentDateDisplay').textContent = now.toDateString(); }
