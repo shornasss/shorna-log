@@ -287,7 +287,62 @@
       document.getElementById('mainContent').innerHTML = html + `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
     }
     function clearNotes() { document.getElementById('notePad').innerText = ""; localStorage.removeItem('shornaNote'); document.getElementById('translationOutput').innerText = "..."; }
-  // --- নতুন ড্রাফট যোগ করার ফাংশন (Add New Draft) ---
+ // --- নতুন স্ক্রিপ্ট যোগ করার ফাংশন (Add New Script) ---
+    function addNewScript() {
+      const name = prompt("Enter Script Name:");
+      if (!name || !name.trim()) return;
+      
+      const content = prompt("Enter Script Content / Code:");
+      if (!content) return;
+
+      let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+      userScripts.push({ name: name, content: content });
+      localStorage.setItem('shornaUserScripts', JSON.stringify(userScripts));
+      
+      alert("Script saved successfully!");
+      showScriptPage(); // পেজ রিফ্রেশ করে নতুন স্ক্রিপ্টটি দেখাবে
+    }
+
+    // --- স্ক্রিপ্ট দেখার ফাংশন (View Script) ---
+    function viewScript(type, index) {
+      let script;
+      if (type === 'fixed') {
+        script = fixedScripts[index];
+      } else {
+        let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+        script = userScripts[index];
+      }
+      
+      if (!script) return;
+
+      let html = `<h2>View Script (${script.name})</h2>`;
+      html += `<textarea id="scriptTextArea" style="width:100%; height:300px; padding:10px; border-radius:10px; border:1px solid #ccc; font-family:monospace; font-size:14px; background:#fff; color:#333;" readonly>${script.content}</textarea>`;
+      html += `<br><br><button class="btn-copy btn-action" onclick="copyScriptText()">📋 Copy Script</button>`;
+      html += `<button class="btn-back btn-action" onclick="showScriptPage()">Back to List</button>`;
+      
+      document.getElementById('mainContent').innerHTML = html;
+    }
+
+    // --- স্ক্রিপ্ট টেক্সট কপি করার ফাংশan ---
+    function copyScriptText() {
+      const textArea = document.getElementById('scriptTextArea');
+      textArea.select();
+      document.execCommand('copy');
+      alert("Script copied to clipboard!");
+    }
+
+    // --- স্ক্রিপ্ট ডিলিট করার ফাংশন (Delete User Script) ---
+    function deleteUserScript(index) {
+      if (confirm("Are you sure you want to delete this script?")) {
+        let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
+        userScripts.splice(index, 1);
+        localStorage.setItem('shornaUserScripts', JSON.stringify(userScripts));
+        
+        alert("Script deleted!");
+        showScriptPage(); // পেজ রিফ্রেশ
+      }
+    }
+    // --- নতুন ড্রাফট যোগ করার ফাংশন (Add New Draft) ---
     function addNewDraft(cat) {
       const keyword = prompt("Enter Draft Keyword / Subject:");
       if (!keyword || !keyword.trim()) return;
