@@ -287,6 +287,50 @@
       document.getElementById('mainContent').innerHTML = html + `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
     }
     function clearNotes() { document.getElementById('notePad').innerText = ""; localStorage.removeItem('shornaNote'); document.getElementById('translationOutput').innerText = "..."; }
+  // --- নতুন ড্রাফট যোগ করার ফাংশন (Add New Draft) ---
+    function addNewDraft(cat) {
+      const keyword = prompt("Enter Draft Keyword / Subject:");
+      if (!keyword || !keyword.trim()) return;
+      
+      const mailContent = prompt("Enter Mail Content:");
+      if (!mailContent) return;
+
+      let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+      userDrafts.push({ keyword: keyword, mail: mailContent });
+      localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+      
+      alert("Draft saved successfully!");
+      showDraftPage(cat); // পেজটি রিফ্রেশ করে নতুন ড্রাফটটি দেখাবে
+    }
+
+    // --- ড্রাফট দেখার ফাংশন (View Draft) ---
+    function viewDraft(type, cat, index) {
+      let draft;
+      if (type === 'system') {
+        draft = systemDrafts[cat][index];
+      } else {
+        let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+        draft = userDrafts[index];
+      }
+      
+      if (!draft) return;
+
+      let html = `<h2>View Draft (${draft.keyword})</h2>`;
+      html += `<div class="mail-view">${draft.mail.replace(/\n/g, '<br>')}</div>`;
+      html += `<br><button class="btn-back btn-action" onclick="showDraftPage('${cat}')">Back to List</button>`;
+      
+      document.getElementById('mainContent').innerHTML = html;
+    }
+
+    // --- ড্রাফট ডিলিট করার ফাংশন (Delete User Draft) ---
+    function deleteUserDraft(cat, index) {
+      if (confirm("Are you sure you want to delete this draft?")) {
+        let userDrafts = JSON.parse(localStorage.getItem('shornaUserDrafts_' + cat) || "[]");
+        userDrafts.splice(index, 1);
+        localStorage.setItem('shornaUserDrafts_' + cat, JSON.stringify(userDrafts));
+        showDraftPage(cat); // ডিলিট হওয়ার পর লিস্ট আপডেট করবে
+      }
+    }
   </script>
 </body>
 </html>
