@@ -271,13 +271,71 @@
       document.getElementById('mainContent').innerHTML = html + `</div><button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
     }
     // ... existing delete/view functions continue here (maintained from your code)
+    // --- রেগুলার পেজ দেখানোর ফাংশন (Show Regular Page) ---
     function showRegularPage() {
       const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
-      let html = `<h2>Regular Files</h2><button class="btn-back btn-action" onclick="location.reload()">Back</button><div style="margin-top:20px;">`;
-      files.forEach((file, index) => {
-        html += `<div class="reg-item"><span onclick="viewFile(${index})" style="cursor:pointer; color:blue;">File: ${file.date}</span><button class="btn-delete" onclick="deleteFile(${index})">Delete</button></div>`;
-      });
+      let html = `<h2>Regular Files</h2>`;
+      html += `<button class="btn-save btn-action" onclick="addNewRegularFile()">+ Add New File</button>`;
+      html += `<button class="btn-back btn-action" onclick="location.reload()">Back</button>`;
+      html += `<div style="margin-top:20px;">`;
+      
+      if (files.length === 0) {
+        html += `<p style="text-align:left; color:#777;">No regular files saved yet!</p>`;
+      } else {
+        files.forEach((file, index) => {
+          html += `<div class="reg-item"><span onclick="viewFile(${index})" style="cursor:pointer; color:#3498db; font-weight:bold; flex-grow:1; text-align:left;">File: ${file.date}</span><button class="btn-delete" onclick="deleteFile(${index})">Delete</button></div>`;
+        });
+      }
       document.getElementById('mainContent').innerHTML = html + `</div>`;
+    }
+
+    // --- সরাসরি নতুন ফাইল যোগ করার ফাংশন (Add New Regular File) ---
+    function addNewRegularFile() {
+      const content = prompt("Enter Content for Regular File:");
+      if (!content || !content.trim()) return;
+
+      const date = new Date().toLocaleString();
+      let regularFiles = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      regularFiles.push({ date: date, content: content });
+      localStorage.setItem('shornaRegular', JSON.stringify(regularFiles));
+      
+      alert("File added successfully!");
+      showRegularPage(); // পেজ রিফ্রেশ করে লিস্ট দেখাবে
+    }
+
+    // --- ফাইল ওপেন করে দেখার ফাংশন (View Regular File) ---
+    function viewFile(index) {
+      const files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+      const file = files[index];
+      if (!file) return;
+
+      let html = `<h2>View Regular File (${file.date})</h2>`;
+      html += `<textarea id="regTextArea" style="width:100%; height:300px; padding:10px; border-radius:10px; border:1px solid #ccc; font-family:sans-serif; font-size:15px; background:#fff; color:#333;" readonly>${file.content}</textarea>`;
+      html += `<br><br><button class="btn-copy btn-action" onclick="copyRegText()">📋 Copy Text</button>`;
+      html += `<button class="btn-back btn-action" onclick="showRegularPage()">Back to List</button>`;
+      
+      document.getElementById('mainContent').innerHTML = html;
+    }
+
+    // --- রেগুলার ফাইল টেক্সট কপি করার ফাংশন ---
+    function copyRegText() {
+      const textArea = document.getElementById('regTextArea');
+      textArea.select();
+      document.execCommand('copy');
+      alert("Text copied to clipboard!");
+    }
+
+    // --- রেগুলার ফাইল ডিলিট করার ফাংশন ---
+    function deleteFile(index) {
+      if (confirm("Are you sure you want to delete this file?")) {
+        let files = JSON.parse(localStorage.getItem('shornaRegular') || "[]");
+        files.splice(index, 1);
+        localStorage.setItem('shornaRegular', JSON.stringify(files));
+        
+        alert("File deleted!");
+        showRegularPage(); // পেজ রিফ্রেশ
+      }
+    
     }
     function showScriptPage() {
       let userScripts = JSON.parse(localStorage.getItem('shornaUserScripts') || "[]");
